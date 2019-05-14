@@ -2,9 +2,9 @@
 
 Display sink for the hero display that presents information to the user.
 
-#### Build Setup
+# Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
@@ -17,8 +17,28 @@ npm run build
 # run unit & end-to-end tests
 npm test
 
-
 # lint all JS/Vue component files in `src/`
 npm run lint
 
+```
+
+# Test hero display
+
+## Dependencies
+
+```bash
+sudo apt-get install ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-rostopic
+```
+
+## Run
+
+```bash
+# Launch rosbridge server
+roslaunch rosbridge_server rosbridge_websocket.launch
+
+# Launch example string publisher
+rostopic pub /string std_msgs/String -- "I am hero, an awesome robot!"
+
+# Run hero-display executable
+./build/linux-unpacked/hero-display
 ```
