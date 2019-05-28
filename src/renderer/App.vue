@@ -4,13 +4,14 @@
       <v-icon name="spinner" pulse scale="5" />
     </div>
     <div v-else>
+      <vue-typer :text='text' :erase-on-complete='true' :pre-erase-delay='2000' :repeat='0' @completed='text = " "'></vue-typer>
       <img v-if="imageSrc" :src="`${imageSrc}`" />
-      <vue-typer :text='text' :erase-on-complete='true' :pre-erase-delay='2000' :repeat='0'></vue-typer>
     </div>
   </div>
 </template>
 
 <script>
+  import { remote } from 'electron'
   import { VueTyper } from 'vue-typer'
   import AutoRos from './services/ros'
   import ROSLIB from 'roslib'
@@ -75,7 +76,7 @@
       }
     },
     mounted () {
-      // remote.getCurrentWindow().setFullScreen(true)
+      remote.getCurrentWindow().setFullScreen(true)
       AutoRos.connect(this.endPoint)
       this.textTopic.subscribe((msg) => {
         this.text = msg.data
