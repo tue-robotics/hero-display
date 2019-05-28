@@ -37,7 +37,7 @@ sudo apt-get install ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-rostopic
 roslaunch rosbridge_server rosbridge_websocket.launch
 
 # Launch example string publisher
-rostopic pub /string std_msgs/String -- "I am hero, an awesome robot!"
+rostopic pub /text_to_speech/output std_msgs/String -- "I am hero, an awesome robot!"
 
 # Run hero-display executable
 ./build/linux-unpacked/hero-display
