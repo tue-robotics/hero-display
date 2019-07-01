@@ -1,18 +1,44 @@
 <template>
   <div id="app">
     <div v-if="hmiGoalActive" id="hmiGoalActive">
-      <v-icon name="spinner" pulse scale="5" />
+      <div>
+        <v-icon name="microphone" scale="20" id="mic" />
+        <v-icon name="spinner" scale="20" pulse id="spinner" />
+      </div>
+      <small id="hmiGoalActiveText">I'm listening ...</small>
     </div>
-    <div v-else>
-      <vue-typer :text='text' :erase-on-complete='true' :pre-erase-delay='2000' :repeat='0' @completed='text = " "'></vue-typer>
-      <img v-if="imageSrc" :src="`${imageSrc}`" />
+    <div v-else-if="text || imageSrc" id="contentBox">
+      <span v-text='text' v-if="text" />
+      <div v-else id="image" :style="{backgroundImage: `url(${imageSrc})`}" />
+    </div>
+
+    <!-- logo -->
+    <div v-if="hmiGoalActive || text || imageSrc" id="logoSmall">
+      <img src="static/logo.png" />
+    </div>
+    <div v-else id="logoBig">
+      <img src="static/logo.png" />
+    </div>
+
+    <div class="backgroundArea" >
+      <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
   import { remote } from 'electron'
-  import { VueTyper } from 'vue-typer'
   import AutoRos from './services/ros'
   import ROSLIB from 'roslib'
   import jpeg from 'jpeg-js'
@@ -48,9 +74,6 @@
 
   export default {
     name: 'hero-display',
-    components: {
-      VueTyper
-    },
     data () {
       return {
         textTopic: new ROSLIB.Topic({
@@ -63,41 +86,254 @@
           name: 'image_from_ros',
           messageType: 'sensor_msgs/Image'
         }),
+        compressedImageTopic: new ROSLIB.Topic({
+          ros: AutoRos.ros,
+          name: 'hmi/image',
+          messageType: 'sensor_msgs/CompressedImage'
+        }),
         hmiStatusTopic: new ROSLIB.Topic({
           ros: AutoRos.ros,
           name: 'hmi/status',
           messageType: 'actionlib_msgs/GoalStatusArray'
         }),
-        text: ' ',
+        text: '',
+        msPerChar: 100,
         imageSrc: null,
         imageShowSeconds: 4,
         hmiGoalActive: false,
-        endPoint: 'ws://localhost:9090'
+        endPoint: 'ws://localhost:9090',
+        textTimeout: null,
+        imageTimeout: null
+      }
+    },
+    methods: {
+      setupClearImage (stamp) {
+        if (this.imageTimeout) {
+          clearTimeout(this.imageTimeout)
+        }
+        var seconds = stamp.secs + 1e-9 * stamp.nsecs
+        this.imageTimeout = setTimeout(() => {
+          this.imageSrc = null
+        }, seconds <= 0.0 ? this.imageShowSeconds * 1000 : seconds * 1000)
       }
     },
     mounted () {
       remote.getCurrentWindow().setFullScreen(true)
       AutoRos.connect(this.endPoint)
       this.textTopic.subscribe((msg) => {
+        if (this.textTimeout) {
+          clearTimeout(this.textTimeout)
+        }
         this.text = msg.data
+        this.textTimeout = setTimeout(() => {
+          this.text = ''
+        }, this.msPerChar * this.text.length + 2000)
       })
       this.imageTopic.subscribe((msg) => {
         this.imageSrc = imageToBase64JpegString(msg)
-        setTimeout(() => {
-          this.imageSrc = null
-        }, this.imageShowSeconds * 1000)
+        this.setupClearImage(msg.header.stamp)
+      })
+      this.compressedImageTopic.subscribe((msg) => {
+        this.imageSrc = 'data:image/jpeg;base64,' + msg.data
+        this.setupClearImage(msg.header.stamp)
       })
       this.hmiStatusTopic.subscribe((msg) => {
-        this.hmiGoalActive = msg.status_list.length > 0
+        var active = false
+        msg.status_list.forEach((status) => {
+          if (status.status === 1) {
+            active = true
+          }
+        })
+        this.hmiGoalActive = active
       })
     }
   }
 </script>
 
 <style>
+#contentBox {
+  height: 600px;
+  width: 1024px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#mic {
+  color: #067340;
+}
+#image {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center; /* Center the image */
+}
+#spinner {
+  color: #df9101;
+}
+body {
+  background-color: #171717;
+  width: 1024px;
+  height: 600px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 #app {
   position: relative;
   text-align: center;
-  font-size: 40px;
+  font-size: 90px;
+  color: white;
+  font-family: Ubuntu;
+  width: 1024px;
+  height: 600px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+#hmiGoalActive {
+  padding: 70px;
+}
+#hmiGoalActiveText {
+  color: #a2a2a2;
+  font-size: 60px;
+}
+#logoBig {
+  margin-top: 75px;
+}
+#logoSmall {
+  margin-top: 55px;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  margin: 20px;
+}
+#logoSmall img {
+  width: 120px;
+}
+
+.backgroundArea {
+  z-index: -100;
+  width: 1024px;
+  height: 600px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.circles{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+}
+
+.circles li{
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  animation: animate 25s linear infinite;
+  bottom: -150px;
+
+}
+
+.circles li:nth-child(1){
+  left: 25%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 0s;
+}
+
+
+.circles li:nth-child(2){
+  left: 10%;
+  width: 20px;
+  height: 20px;
+  animation-delay: 2s;
+  animation-duration: 12s;
+}
+
+.circles li:nth-child(3){
+  left: 70%;
+  width: 20px;
+  height: 20px;
+  animation-delay: 4s;
+}
+
+.circles li:nth-child(4){
+  left: 40%;
+  width: 60px;
+  height: 60px;
+  animation-delay: 0s;
+  animation-duration: 18s;
+}
+
+.circles li:nth-child(5){
+  left: 65%;
+  width: 20px;
+  height: 20px;
+  animation-delay: 0s;
+}
+
+.circles li:nth-child(6){
+  left: 75%;
+  width: 110px;
+  height: 110px;
+  animation-delay: 3s;
+}
+
+.circles li:nth-child(7){
+  left: 35%;
+  width: 150px;
+  height: 150px;
+  animation-delay: 7s;
+}
+
+.circles li:nth-child(8){
+  left: 50%;
+  width: 25px;
+  height: 25px;
+  animation-delay: 15s;
+  animation-duration: 45s;
+}
+
+.circles li:nth-child(9){
+  left: 20%;
+  width: 15px;
+  height: 15px;
+  animation-delay: 2s;
+  animation-duration: 35s;
+}
+
+.circles li:nth-child(10){
+  left: 85%;
+  width: 150px;
+  height: 150px;
+  animation-delay: 0s;
+  animation-duration: 11s;
+}
+
+@keyframes animate {
+  0%{
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
+  }
+
+  100%{
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
+  }
 }
 </style>
