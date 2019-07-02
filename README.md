@@ -19,7 +19,6 @@ npm test
 
 # lint all JS/Vue component files in `src/`
 npm run lint
-
 ```
 
 # Test hero display
@@ -40,5 +39,5 @@ roslaunch rosbridge_server rosbridge_websocket.launch
 rostopic pub /text_to_speech/output std_msgs/String -- "I am hero, an awesome robot!"
 
 # Run hero-display executable
-./build/linux-unpacked/hero-display
+export NO_FULLSCREEN=1 && ./hero-display.AppImage
 ```

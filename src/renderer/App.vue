@@ -118,7 +118,9 @@
       }
     },
     mounted () {
-      remote.getCurrentWindow().setFullScreen(true)
+      if (!process.env.NO_FULLSCREEN) {
+        remote.getCurrentWindow().setFullScreen(true)
+      }
       AutoRos.connect(this.endPoint)
       this.textTopic.subscribe((msg) => {
         if (this.textTimeout) {
