@@ -8,8 +8,8 @@
       <small id="hmiGoalActiveText">I'm listening ...</small>
     </div>
     <div v-else-if="text || imageSrc" id="contentBox">
-      <span v-text='text' v-if="text" />
-      <div v-else id="image" :style="{backgroundImage: `url(${imageSrc})`}" />
+      <div v-if="imageSrc" id="image" :style="{backgroundImage: `url(${imageSrc})`}" />
+      <span v-else v-text='text' />
     </div>
 
     <!-- logo -->
