@@ -9,7 +9,7 @@
     </div>
     <div v-else-if="text || imageSrc" id="contentBox">
       <div v-if="imageSrc" id="image" :style="{backgroundImage: `url(${imageSrc})`}" />
-      <span v-else v-text='text' />
+      <span v-text='text' id="text" :style="{fontSize: imageSrc ? '50px' : '90px'}" />
     </div>
 
     <!-- logo -->
