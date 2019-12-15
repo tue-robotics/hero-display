@@ -146,9 +146,7 @@
             active = true
           }
         })
-        setTimeout(() => {
-          this.hmiGoalActive = active
-        }, 1000)
+        this.hmiGoalActive = active
       })
     }
   }
