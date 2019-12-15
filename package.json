@@ -1,8 +1,13 @@
 {
   "name": "hero-display",
   "version": "0.0.1",
-  "author": "Rein Appeldoorn <reinzor@gmail.com>",
-  "description": "An electron-vue project",
+  "private": true,
+  "repository": "tue-robotics/hero-display",
+  "author": {
+    "name": "Rein Appeldoorn",
+    "email": "reinzor@gmail.com"
+  },
+  "description": "App for display on HERO robot",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
