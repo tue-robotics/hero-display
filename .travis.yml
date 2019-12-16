@@ -37,3 +37,16 @@ script:
 #- xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
 #- yarn run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
 - npm run build
+- npm run test
+
+deploy:
+  provider: releases
+  api_key:
+    secure: PTGCFXXGGmZVQ8dUTeUsdgKPaHOQyQKgz0PSwj20wqorXZu5hInzlRRI2PJXiN9DHb7GzhGK5dIImW9n4SjG/RY5zOawWo1ZboV7X8NyqnkLBayOjpzLnmPU9zUwTNGiZ+sg1jrjqN602XjeBTXUhz/s011lMO+yPxYtfQ6dnuSUF9B2FOTMRrWLnswlyh/dXBpV1EQ5o2YAqkSRRAW4LmRBp9FSTpVgfwojde8Q9sTAHLQgXsoMv+jorwKRBLzeXw0CWe/aUEvTWsbS34TuokuoRbZl48PzfEOXiSWmJoHW9Yo4skJaWBpCSk9DAnaAeLOO+DJY7rGlClD88wv9+MtrkXOgzQYMd6NMdrRLK2BF7TOUWJ3FBoqmgO4uymWxMfhq0SA/1eJk0TVKMtHl3G7Gb6a1jVv9dVlkFEAKwFEfAD6nFoP6sBw0Z0B8Jrj+F/6uxkGIwX3LoARRT63N5t+zLvg9GKh3FF8SIroaQ+7IhkSTBhpKJASYjuFYZt0veCJ1UBRVKSDsp0KiwoaEGCTsEMxlOYYvnjyYEn13qsielBe25h81hzKXpHkvQm1YXSTR+R1bD9okuzlt8v4Sd/3hH7SbKPW95+1w8WFeS8/ZdICCMB1h2Jd4B0imsogLucgj3d0wVJXsyvpYuE7WFcZsESinhNwzRhQRjZWpVkY=
+  file_glob: false
+  file: hero-display.AppImage
+  skip_cleanup: true
+  on:
+    repo: tue-robotics/hero-display
+    tags: true
+    all_branches: true
