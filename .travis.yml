@@ -2,6 +2,9 @@
 # https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
 sudo: required
 dist: xenial
+services:
+  - xvfb
+
 language: node_js
 node_js:
 - '11'
