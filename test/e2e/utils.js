@@ -1,7 +1,7 @@
 import electron from 'electron'
 import { Application } from 'spectron'
 
-const TIMEOUT = 15000
+const TIMEOUT = 20000
 
 export default {
   afterEach () {
