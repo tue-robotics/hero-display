@@ -27,7 +27,12 @@
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "test": "npm run e2e",
-    "postinstall": "npm run lint:fix"
+    "postinstall": "npm run lint:fix",
+    "version": "npm run build",
+    "patch": "npm version patch && npm run postpublish",
+    "minor": "npm version minor && npm run postpublish",
+    "major": "npm version major && npm run postpublish",
+    "postpublish": "git push && git push --tags"
   },
   "build": {
     "productName": "hero-display",
