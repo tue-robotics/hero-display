@@ -115,21 +115,35 @@
         this.imageTimeout = setTimeout(() => {
           this.imageSrc = null
         }, seconds <= 0.0 ? this.imageShowSeconds * 1000 : seconds * 1000)
+      },
+      setupClearText (seconds) {
+        if (this.textTimeout) {
+          clearTimeout(this.textTimeout)
+        }
+        this.textTimeout = setTimeout(() => {
+          this.text = ''
+        }, seconds <= 0.0 ? this.msPerChar * this.text.length + 2000 : seconds * 1000)
+      },
+      setText (data, seconds = 0) {
+        this.text = data
+        this.setupClearText(seconds)
+      },
+      OnConnection () {
+        this.setText('Connection established', 5)
+      },
+      OnClose () {
+        this.setText('Connection lost', 1e5)
       }
     },
     mounted () {
       if (!process.env.NO_FULLSCREEN) {
         remote.getCurrentWindow().setFullScreen(true)
       }
+      AutoRos.ros.on('connection', this.OnConnection.bind(this))
+      AutoRos.ros.on('close', this.OnClose.bind(this))
       AutoRos.connect(this.endPoint)
       this.textTopic.subscribe((msg) => {
-        if (this.textTimeout) {
-          clearTimeout(this.textTimeout)
-        }
-        this.text = msg.data
-        this.textTimeout = setTimeout(() => {
-          this.text = ''
-        }, this.msPerChar * this.text.length + 2000)
+        this.setText(msg.data)
       })
       this.imageTopic.subscribe((msg) => {
         this.imageSrc = imageToBase64JpegString(msg)
