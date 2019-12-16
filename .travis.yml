@@ -34,7 +34,7 @@ install:
 - npm install
 
 # Temp to force different WS version for roslib
-- cd node_modules/roslib && npm install ws@^7.2.1 --save-prod
+- cd node_modules/roslib && npm install ws@^7.2.1 --save-prod && cd ../..
 - npm install bufferutil utf-8-validate
 
 script:
