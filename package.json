@@ -38,6 +38,7 @@
   "build": {
     "productName": "hero-display",
     "appId": "com.hero-display.display-app",
+    "artifactName": "hero-display.${ext}",
     "directories": {
       "output": "build"
     },
