@@ -37,7 +37,7 @@
   },
   "build": {
     "productName": "hero-display",
-    "appId": "com.example.yourapp",
+    "appId": "com.hero-display.display-app",
     "directories": {
       "output": "build"
     },
