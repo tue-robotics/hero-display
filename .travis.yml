@@ -45,7 +45,7 @@ script:
 #- yarn run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
 - npm run build
 - npm run pack
-- xvfb-run --server-args="-screen 0 1024x600x24" node_modules/.bin/mocha test/e2e
+- npm run e2e
 
 deploy:
   provider: releases
