@@ -139,9 +139,18 @@
       if (!process.env.NO_FULLSCREEN) {
         remote.getCurrentWindow().setFullScreen(true)
       }
+      const remote2 = window.require('electron').remote
+      const argv = remote2.process.argv
+      const index = argv.length - 1
+      var url = this.endPoint
+      if (index > 0) {
+        const host = argv[index]
+        url = `ws://${host}:9090`
+      }
+
       AutoRos.ros.on('connection', this.OnConnection.bind(this))
       AutoRos.ros.on('close', this.OnClose.bind(this))
-      AutoRos.connect(this.endPoint)
+      AutoRos.connect(url)
       this.textTopic.subscribe((msg) => {
         this.setText(msg.data)
       })
