@@ -32,8 +32,7 @@ before_script:
 
 script:
 - npm run build
-- npm run pack
-- npm run e2e
+- npm run test
 
 deploy:
   provider: releases
