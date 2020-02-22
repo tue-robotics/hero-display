@@ -22,16 +22,7 @@
 
     <div class="backgroundArea" >
       <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
+        <li v-for="index in 10" :key="index" />
       </ul>
     </div>
   </div>
