@@ -78,7 +78,7 @@
     "jpeg-js": "^0.3.5",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.1",
-    "roslib": "^1.0.1",
+    "roslib": "^1.1.0",
     "vue": "^2.5.16",
     "vue-awesome": "^3.5.3",
     "vue-electron": "^1.0.6",
