@@ -24,7 +24,7 @@ function createWindow () {
     useContentSize: true,
     width: 1024,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: True
   }
   })
 
