@@ -20,18 +20,30 @@
       <img src="static/logo.png" />
     </div>
 
+    <!-- battery -->
+    <div v-if="!hmiGoalActive && !text && !imageSrc" id="battery">
+      <b-container fluid class="p-0 m-0">
+        <b-row>
+          <b-col v-for="(v, key) in batteries" :key="key" align="center" id="battery_col" class="pr-0">
+            <span>
+                <h5 vertical-align="text-bottom">
+                  {{key}}
+                  <v-icon v-if="v.charging" name="bolt" id="bolt" />
+                </h5>
+            </span>
+            <b-progress class="w-100" id="batteryProgress" :style="batteryProgressStyle">
+              <b-progress-bar :value="v.percentage" :animated="v.charging" :variant="v.type"">
+                <span class="position-absolute w-100 d-block"><b>{{v.percentage}}%</b></span>
+              </b-progress-bar>
+            </b-progress>
+          </b-col>
+        </b-row>
+      </b-container>
+    </div>
+
     <div class="backgroundArea" >
       <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
+        <li v-for="index in 10" :key="index" />
       </ul>
     </div>
   </div>
@@ -59,7 +71,7 @@
         frameData[4 * i + 0] = array[3 * i + 2]
         frameData[4 * i + 2] = array[3 * i + 0]
       } else {
-        console.error('invalid encoding', msg.encofing)
+        console.error('invalid encoding', msg.encoding)
       }
       frameData[4 * i + 1] = array[3 * i + 1]
       frameData[4 * i + 3] = 0
@@ -96,6 +108,11 @@
           name: 'hmi/status',
           messageType: 'actionlib_msgs/GoalStatusArray'
         }),
+        batteryTopic: new ROSLIB.Topic({
+          ros: AutoRos.ros,
+          name: 'battery',
+          messageType: 'sensor_msgs/BatteryState'
+        }),
         text: '',
         msPerChar: 100,
         imageSrc: null,
@@ -103,7 +120,11 @@
         hmiGoalActive: false,
         endPoint: 'ws://localhost:9090',
         textTimeout: null,
-        imageTimeout: null
+        imageTimeout: null,
+        batteries: {},
+        batteryProgressStyle: {
+          'background-color': '#d0d0d0'
+        }
       }
     },
     methods: {
@@ -128,11 +149,78 @@
         this.text = data
         this.setupClearText(seconds)
       },
+      setupClearBatteryType (key, seconds = 10) {
+        if (this.batteries[key].TypeTimeOut) {
+          clearTimeout(this.batteries[key].TypeTimeOut)
+        }
+        this.batteries[key].TypeTimeOut = setTimeout(() => {
+          this.batteries[key].type = 'dark'
+          this.batteries[key].charging = false
+        }, seconds * 1000)
+      },
+      setupRemoveBattery (key, seconds = 60) {
+        if (this.batteries[key].RemoveTimeOut) {
+          clearTimeout(this.batteries[key].RemoveTimeOut)
+        }
+        this.batteries[key].RemoveTimeOut = setTimeout(() => {
+          console.log('deleting battery', key)
+          this.$delete(this.batteries, key)
+        }, seconds * 1000)
+      },
       OnConnection () {
-        this.setText('Connection established', 5)
+        this.setText('Connection established', 1)
       },
       OnClose () {
         this.setText('Connection lost', 1e5)
+      },
+      handleBatteryMsg (msg) {
+        var type = 'info'
+        const percentage = Math.round(msg.percentage * 100)
+        if (percentage > 40) {
+          type = 'success'
+        } else if (percentage > 20) {
+          type = 'warning'
+        } else {
+          type = 'danger'
+        }
+
+        const batteries = this.batteries
+        const key = msg.location
+
+        // Get battery or create new one
+        var battery
+        if (!batteries.hasOwnProperty(key)) {
+          battery = {
+            percentage: null,
+            type: null,
+            charging: null,
+            TypeTimeOut: null,
+            RemoveTimeOut: null
+          }
+        } else {
+          battery = batteries[key]
+        }
+        // Only update the state, not the timeouts, which are done
+        // at the end
+        battery.percentage = percentage
+        battery.type = type
+        battery.charging = msg.power_supply_status === 1 // POWER_SUPPLY_STATUS_CHARGING = 1
+
+        // Update current battery
+        batteries[key] = battery
+
+        // Order batteries, so it shown on alphabetical order
+        const ordered = {}
+        Object.keys(batteries).sort().forEach(function (key) {
+          ordered[key] = batteries[key]
+        })
+
+        // Update batteries with ordered
+        this.batteries = ordered
+
+        // Setup Timeouts for this battery
+        this.setupClearBatteryType(key, 10)
+        this.setupRemoveBattery(key, 60)
       }
     },
     mounted () {
@@ -171,6 +259,14 @@
         })
         this.hmiGoalActive = active
       })
+      this.batteryTopic.subscribe(this.handleBatteryMsg)
+    },
+    beforeDestroy () {
+      this.textTopic.unsubscribe({})
+      this.imageTopic.unsubscribe({})
+      this.compressedImageTopic.unsubscribe({})
+      this.hmiStatusTopic.unsubscribe({})
+      this.batteryTopic.unsubscribe({})
     }
   }
 </script>
@@ -239,6 +335,28 @@ body {
 #logoSmall img {
   width: 120px;
 }
+
+#battery {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  margin: 20px;
+}
+
+#batteryProgress {
+  height: 2rem;
+}
+
+#battery_col {
+  width: 120px;
+}
+
+#bolt {
+  color: #FFFF00;
+  height: 1rem;
+  width: auto;
+}
+
 
 .backgroundArea {
   z-index: -100;

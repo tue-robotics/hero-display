@@ -1,6 +1,6 @@
 # Commented sections below can be used to run tests on the CI server
 # https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
-sudo: required
+os: linux
 dist: trusty
 language: node_js
 node_js:
@@ -22,22 +22,17 @@ addons:
 install:
 - npm install
 
-# Temp to force different WS version for roslib
-- cd node_modules/roslib && npm install ws@^7.2.1 --save-prod && cd ../..
-- npm install bufferutil utf-8-validate
-
 before_script:
 - export DISPLAY=':99.0'
 - Xvfb :99 -screen 0 1024x600x24 > /dev/null 2>&1 &
 
 script:
 - npm run build
-- npm run pack
-- npm run e2e
+- npm run test
 
 deploy:
   provider: releases
-  api_key:
+  token:
     secure: P3SC929iGTMzc//w2NrXRHgvm1Ij3I8MQtfyjvBfMkQkhIMN5JU83uB8dGJr2FN8SsxCI+cD/hgErK9FGdg/IicXRv9QRpZNi0altPJ0eSK3jtZ5Fpr6xeFuU9eEaPgnzm71itf576knE1xi9kRpDCW/aQjj6G+kYJPcyV/yHyoXoRIiHGlgaGs1AjleO6W65mUgxZ/LyKIccccSjM6WS5tWYamHGVCE6zqW4dVJZEzlCKkKPFu7jnR0GGQvXgMroQGbdbhx87PLpM4tuPWke/DiUX+Oxz7wNy/OeZOblfD4fVVloJfLBWYEfDQpM95N5jkP4XXAurY3r6fqZ/UrmmNSD4gtqQO7EXW8sVKBqOQ6zFvQVyHCVG1+wtWyR0VLU29ulFqgCnB1fN2KcGVd+oEaRZvbJ9IM/uurJqG0Z1GtmKJwAdiMirBw8pqknPUQtWpAVG49hsf9zDXseymphu3YRI70paVYh/mPNHLg4VH2QZ7SLFUs6c7CnhvuREypKBWzOz++h1mKH29YcCNWhtSQ2sIsZPU731m68VfmtlY7UXKuXgta4GtDs84eFemHc7rdi6Nw8DvmdaKM8t9dLnUDyrd07hZtGsmxu1Gp60pNqEm/XDocESz670xcsy1+l62dMZOBOluZXhYQ0Z8HTwqQg4QMLxp1wrFHBE5FbOs=
   file: build/hero-display.AppImage
   skip_cleanup: true
