@@ -71,7 +71,7 @@
         frameData[4 * i + 0] = array[3 * i + 2]
         frameData[4 * i + 2] = array[3 * i + 0]
       } else {
-        console.error('invalid encoding', msg.encofing)
+        console.error('invalid encoding', msg.encoding)
       }
       frameData[4 * i + 1] = array[3 * i + 1]
       frameData[4 * i + 3] = 0
