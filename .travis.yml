@@ -22,10 +22,6 @@ addons:
 install:
 - npm install
 
-# Temp to force different WS version for roslib
-- cd node_modules/roslib && npm install ws@^7.2.1 --save-prod && cd ../..
-- npm install bufferutil utf-8-validate
-
 before_script:
 - export DISPLAY=':99.0'
 - Xvfb :99 -screen 0 1024x600x24 > /dev/null 2>&1 &
