@@ -1,4 +1,6 @@
 # hero-display
+[![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![devDependency Status][daviddm-image-dev]][daviddm-url-dev] [![optionalDependencies Status][daviddm-image-optional]][daviddm-url-optional]
+
 
 Display sink for the hero display that presents information to the user.
 
@@ -41,3 +43,12 @@ rostopic pub /text_to_speech/output std_msgs/String -- "I am hero, an awesome ro
 # Run hero-display executable
 export NO_FULLSCREEN=1 && ./hero-display.AppImage
 ```
+
+[travis-image]: https://travis-ci.com/tue-robotics/hero-display.svg?branch=master
+[travis-url]: https://travis-ci.com/tue-robotics/hero-display
+[daviddm-image]: https://david-dm.org/tue-robotics/hero-display/status.svg
+[daviddm-url]: https://david-dm.org/tue-robotics/hero-display
+[daviddm-image-dev]: https://david-dm.org/tue-robotics/hero-display/dev-status.svg
+[daviddm-url-dev]: https://david-dm.org/tue-robotics/hero-display?type=dev
+[daviddm-image-optional]: https://david-dm.org/tue-robotics/hero-display/optional-status.svg
+[daviddm-url-optional]: https://david-dm.org/tue-robotics/hero-display?type=optional
