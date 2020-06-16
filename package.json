@@ -2,11 +2,20 @@
   "name": "hero-display",
   "version": "0.4.0",
   "private": true,
-  "repository": "tue-robotics/hero-display",
+  "repository": {
+  "type" : "git",
+  "url" : "https://github.com/tue-robotics/hero-display.git"
+  },
   "author": {
     "name": "Rein Appeldoorn",
     "email": "reinzor@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Matthijs van der Burgh",
+      "email": "MatthijsBurgh@outlook.com"
+    }
+  ],
   "description": "App for display on HERO robot",
   "license": null,
   "main": "./dist/electron/main.js",
