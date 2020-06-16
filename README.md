@@ -46,6 +46,7 @@ export NO_FULLSCREEN=1 && ./hero-display.AppImage
 
 [travis-image]: https://travis-ci.com/tue-robotics/hero-display.svg?branch=master
 [travis-url]: https://travis-ci.com/tue-robotics/hero-display
+
 [daviddm-image]: https://david-dm.org/tue-robotics/hero-display/status.svg
 [daviddm-url]: https://david-dm.org/tue-robotics/hero-display
 [daviddm-image-dev]: https://david-dm.org/tue-robotics/hero-display/dev-status.svg
