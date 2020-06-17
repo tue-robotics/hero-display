@@ -133,7 +133,7 @@
     "mocha": "^8.0.1",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "node-sass": "^4.9.2",
+    "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^3.0.5",
