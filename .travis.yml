@@ -27,8 +27,8 @@ before_script:
 - Xvfb :99 -screen 0 1024x600x24 > /dev/null 2>&1 &
 
 script:
-- npm run build
-- npm run test
+- PROGRESS="--no-progress" npm run build
+- PROGRESS="--no-progress" npm run test
 
 deploy:
   provider: releases
