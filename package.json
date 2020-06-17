@@ -82,6 +82,7 @@
     }
   },
   "dependencies": {
+    "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
     "bson": "^4.0.4",
     "eventemitter2": "^6.4.2",
