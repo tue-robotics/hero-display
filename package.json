@@ -112,7 +112,7 @@
     "devtron": "^1.4.0",
     "electron": "^2.0.4",
     "electron-debug": "^1.5.0",
-    "electron-devtools-installer": "^2.2.4",
+    "electron-devtools-installer": "^3.0.0",
     "electron-builder": "^22.7.0",
     "babel-eslint": "^8.2.3",
     "dependency-check": "^4.1.0",
