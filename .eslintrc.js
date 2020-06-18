@@ -1,7 +1,8 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: "vue-eslint-parser",
   parserOptions: {
+    parser: "babel-eslint",
     sourceType: 'module'
   },
   env: {
@@ -13,7 +14,7 @@ module.exports = {
     __static: true
   },
   plugins: [
-    'html'
+    'vue'
   ],
   'rules': {
     // allow paren-less arrow functions
