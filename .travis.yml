@@ -4,9 +4,7 @@ os: linux
 dist: bionic
 language: node_js
 node_js:
-- '11'
 - '12'
-- '13'
 - '14'
 
 cache:
@@ -43,4 +41,4 @@ deploy:
     repo: tue-robotics/hero-display
     tags: true
     all_branches: true
-    node_js: '11'
+    node_js: '12'
