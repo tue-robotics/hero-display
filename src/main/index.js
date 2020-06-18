@@ -31,6 +31,11 @@ function createWindow () {
     }
   })
 
+  if (process.env.NODE_ENV === 'production') {
+    // No menu bar in production
+    mainWindow.removeMenu()
+  }
+
   mainWindow.loadURL(winURL)
 
   // Open dev tools initially when in development mode
