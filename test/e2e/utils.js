@@ -16,6 +16,8 @@ export default {
     this.app = new Application({
       path: electron,
       args: ['dist/electron/main.js'],
+      chromeDriverArgs: [
+    ],
       startTimeout: TIMEOUT,
       waitTimeout: TIMEOUT
     })

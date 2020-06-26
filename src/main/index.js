@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
+  ? 'http://localhost:9080'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
@@ -20,12 +20,33 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
+    autoHideMenuBar: true,
     height: 600,
     useContentSize: true,
-    width: 1024
+    width: 1024,
+    webPreferences: {
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      webSecurity: false
+    }
   })
 
+  if (process.env.NODE_ENV === 'production') {
+    // No menu bar in production
+    mainWindow.removeMenu()
+  }
+
   mainWindow.loadURL(winURL)
+
+  // Open dev tools initially when in development mode
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.on('did-frame-finish-load', () => {
+      mainWindow.webContents.once('devtools-opened', () => {
+        mainWindow.focus()
+      })
+      mainWindow.webContents.openDevTools()
+    })
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null

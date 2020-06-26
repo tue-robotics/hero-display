@@ -1,10 +1,11 @@
 # Commented sections below can be used to run tests on the CI server
 # https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
 os: linux
-dist: trusty
+dist: bionic
 language: node_js
 node_js:
-- '11'
+- '12'
+- '14'
 
 cache:
   directories:
@@ -27,8 +28,8 @@ before_script:
 - Xvfb :99 -screen 0 1024x600x24 > /dev/null 2>&1 &
 
 script:
-- npm run build
-- npm run test
+- PROGRESS="--no-progress" npm run build
+- PROGRESS="--no-progress" npm run test
 
 deploy:
   provider: releases
@@ -40,3 +41,4 @@ deploy:
     repo: tue-robotics/hero-display
     tags: true
     all_branches: true
+    node_js: '12'

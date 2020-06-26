@@ -32,7 +32,7 @@
                 </h5>
             </span>
             <b-progress class="w-100" id="batteryProgress" :style="batteryProgressStyle">
-              <b-progress-bar :value="v.percentage" :animated="v.charging" :variant="v.type"">
+              <b-progress-bar :value="v.percentage" :animated="v.charging" :variant="v.type">
                 <span class="position-absolute w-100 d-block"><b>{{v.percentage}}%</b></span>
               </b-progress-bar>
             </b-progress>
@@ -50,225 +50,225 @@
 </template>
 
 <script>
-  import { remote } from 'electron'
-  import AutoRos from './services/ros'
-  import ROSLIB from 'roslib'
-  import jpeg from 'jpeg-js'
+import { remote } from 'electron'
+import AutoRos from './services/ros'
+import ROSLIB from 'roslib'
+import jpeg from 'jpeg-js'
 
-  function imageToBase64JpegString (msg) {
-    var raw = atob(msg.data)
-    var array = new Uint8Array(new ArrayBuffer(raw.length))
-    for (let i = 0; i < raw.length; i++) {
-      array[i] = raw.charCodeAt(i)
+function imageToBase64JpegString (msg) {
+  var raw = atob(msg.data)
+  var array = new Uint8Array(new ArrayBuffer(raw.length))
+  for (let i = 0; i < raw.length; i++) {
+    array[i] = raw.charCodeAt(i)
+  }
+
+  var frameData = Buffer.alloc(msg.width * msg.height * 4)
+  for (let i = 0; i < msg.width * msg.height; i++) {
+    if (msg.encoding === 'rgb8') {
+      frameData[4 * i + 0] = array[3 * i + 0]
+      frameData[4 * i + 2] = array[3 * i + 2]
+    } else if (msg.encoding === 'bgr8') {
+      frameData[4 * i + 0] = array[3 * i + 2]
+      frameData[4 * i + 2] = array[3 * i + 0]
+    } else {
+      console.error('invalid encoding', msg.encoding)
     }
+    frameData[4 * i + 1] = array[3 * i + 1]
+    frameData[4 * i + 3] = 0
+  }
+  var rawImageData = {
+    data: frameData,
+    width: msg.width,
+    height: msg.height
+  }
+  return 'data:image/jpeg;base64,' + jpeg.encode(rawImageData, 50).data.toString('base64')
+}
 
-    var frameData = Buffer.alloc(msg.width * msg.height * 4)
-    for (let i = 0; i < msg.width * msg.height; i++) {
-      if (msg.encoding === 'rgb8') {
-        frameData[4 * i + 0] = array[3 * i + 0]
-        frameData[4 * i + 2] = array[3 * i + 2]
-      } else if (msg.encoding === 'bgr8') {
-        frameData[4 * i + 0] = array[3 * i + 2]
-        frameData[4 * i + 2] = array[3 * i + 0]
+export default {
+  name: 'hero-display',
+  data () {
+    return {
+      textTopic: new ROSLIB.Topic({
+        ros: AutoRos.ros,
+        name: 'text_to_speech/output',
+        messageType: 'std_msgs/String'
+      }),
+      imageTopic: new ROSLIB.Topic({
+        ros: AutoRos.ros,
+        name: 'image_from_ros',
+        messageType: 'sensor_msgs/Image'
+      }),
+      compressedImageTopic: new ROSLIB.Topic({
+        ros: AutoRos.ros,
+        name: 'hmi/image',
+        messageType: 'sensor_msgs/CompressedImage'
+      }),
+      hmiStatusTopic: new ROSLIB.Topic({
+        ros: AutoRos.ros,
+        name: 'hmi/status',
+        messageType: 'actionlib_msgs/GoalStatusArray'
+      }),
+      batteryTopic: new ROSLIB.Topic({
+        ros: AutoRos.ros,
+        name: 'battery',
+        messageType: 'sensor_msgs/BatteryState'
+      }),
+      text: '',
+      msPerChar: 100,
+      imageSrc: null,
+      imageShowSeconds: 4,
+      hmiGoalActive: false,
+      endPoint: 'ws://localhost:9090',
+      textTimeout: null,
+      imageTimeout: null,
+      batteries: {},
+      batteryProgressStyle: {
+        'background-color': '#d0d0d0'
+      }
+    }
+  },
+  methods: {
+    setupClearImage (stamp) {
+      if (this.imageTimeout) {
+        clearTimeout(this.imageTimeout)
+      }
+      var seconds = stamp.secs + 1e-9 * stamp.nsecs
+      this.imageTimeout = setTimeout(() => {
+        this.imageSrc = null
+      }, seconds <= 0.0 ? this.imageShowSeconds * 1000 : seconds * 1000)
+    },
+    setupClearText (seconds) {
+      if (this.textTimeout) {
+        clearTimeout(this.textTimeout)
+      }
+      this.textTimeout = setTimeout(() => {
+        this.text = ''
+      }, seconds <= 0.0 ? this.msPerChar * this.text.length + 2000 : seconds * 1000)
+    },
+    setText (data, seconds = 0) {
+      this.text = data
+      this.setupClearText(seconds)
+    },
+    setupClearBatteryType (key, seconds = 10) {
+      if (this.batteries[key].TypeTimeOut) {
+        clearTimeout(this.batteries[key].TypeTimeOut)
+      }
+      this.batteries[key].TypeTimeOut = setTimeout(() => {
+        this.batteries[key].type = 'dark'
+        this.batteries[key].charging = false
+      }, seconds * 1000)
+    },
+    setupRemoveBattery (key, seconds = 60) {
+      if (this.batteries[key].RemoveTimeOut) {
+        clearTimeout(this.batteries[key].RemoveTimeOut)
+      }
+      this.batteries[key].RemoveTimeOut = setTimeout(() => {
+        console.log('deleting battery', key)
+        this.$delete(this.batteries, key)
+      }, seconds * 1000)
+    },
+    OnConnection () {
+      this.setText('Connection established', 1)
+    },
+    OnClose () {
+      this.setText('Connection lost', 1e5)
+    },
+    handleBatteryMsg (msg) {
+      var type = 'info'
+      const percentage = Math.round(msg.percentage * 100)
+      if (percentage > 40) {
+        type = 'success'
+      } else if (percentage > 20) {
+        type = 'warning'
       } else {
-        console.error('invalid encoding', msg.encoding)
+        type = 'danger'
       }
-      frameData[4 * i + 1] = array[3 * i + 1]
-      frameData[4 * i + 3] = 0
+
+      const batteries = this.batteries
+      const key = msg.location
+
+      // Get battery or create new one
+      var battery
+      if (!Object.prototype.hasOwnProperty.call(batteries, key)) {
+        battery = {
+          percentage: null,
+          type: null,
+          charging: null,
+          TypeTimeOut: null,
+          RemoveTimeOut: null
+        }
+      } else {
+        battery = batteries[key]
+      }
+      // Only update the state, not the timeouts, which are done
+      // at the end
+      battery.percentage = percentage
+      battery.type = type
+      battery.charging = msg.power_supply_status === 1 // POWER_SUPPLY_STATUS_CHARGING = 1
+
+      // Update current battery
+      batteries[key] = battery
+
+      // Order batteries, so it shown on alphabetical order
+      const ordered = {}
+      Object.keys(batteries).sort().forEach(function (key) {
+        ordered[key] = batteries[key]
+      })
+
+      // Update batteries with ordered
+      this.batteries = ordered
+
+      // Setup Timeouts for this battery
+      this.setupClearBatteryType(key, 10)
+      this.setupRemoveBattery(key, 60)
     }
-    var rawImageData = {
-      data: frameData,
-      width: msg.width,
-      height: msg.height
+  },
+  mounted () {
+    if (!process.env.NO_FULLSCREEN) {
+      remote.getCurrentWindow().setFullScreen(true)
     }
-    return 'data:image/jpeg;base64,' + jpeg.encode(rawImageData, 50).data.toString('base64')
+    const remote2 = window.require('electron').remote
+    const argv = remote2.process.argv
+    const index = argv.length - 1
+    var url = this.endPoint
+    if (index > 0) {
+      const host = argv[index]
+      url = `ws://${host}:9090`
+    }
+
+    AutoRos.ros.on('connection', this.OnConnection.bind(this))
+    AutoRos.ros.on('close', this.OnClose.bind(this))
+    AutoRos.connect(url)
+    this.textTopic.subscribe((msg) => {
+      this.setText(msg.data)
+    })
+    this.imageTopic.subscribe((msg) => {
+      this.imageSrc = imageToBase64JpegString(msg)
+      this.setupClearImage(msg.header.stamp)
+    })
+    this.compressedImageTopic.subscribe((msg) => {
+      this.imageSrc = 'data:image/jpeg;base64,' + msg.data
+      this.setupClearImage(msg.header.stamp)
+    })
+    this.hmiStatusTopic.subscribe((msg) => {
+      var active = false
+      msg.status_list.forEach((status) => {
+        if (status.status === 1) {
+          active = true
+        }
+      })
+      this.hmiGoalActive = active
+    })
+    this.batteryTopic.subscribe(this.handleBatteryMsg)
+  },
+  beforeDestroy () {
+    this.textTopic.unsubscribe({})
+    this.imageTopic.unsubscribe({})
+    this.compressedImageTopic.unsubscribe({})
+    this.hmiStatusTopic.unsubscribe({})
+    this.batteryTopic.unsubscribe({})
   }
-
-  export default {
-    name: 'hero-display',
-    data () {
-      return {
-        textTopic: new ROSLIB.Topic({
-          ros: AutoRos.ros,
-          name: 'text_to_speech/output',
-          messageType: 'std_msgs/String'
-        }),
-        imageTopic: new ROSLIB.Topic({
-          ros: AutoRos.ros,
-          name: 'image_from_ros',
-          messageType: 'sensor_msgs/Image'
-        }),
-        compressedImageTopic: new ROSLIB.Topic({
-          ros: AutoRos.ros,
-          name: 'hmi/image',
-          messageType: 'sensor_msgs/CompressedImage'
-        }),
-        hmiStatusTopic: new ROSLIB.Topic({
-          ros: AutoRos.ros,
-          name: 'hmi/status',
-          messageType: 'actionlib_msgs/GoalStatusArray'
-        }),
-        batteryTopic: new ROSLIB.Topic({
-          ros: AutoRos.ros,
-          name: 'battery',
-          messageType: 'sensor_msgs/BatteryState'
-        }),
-        text: '',
-        msPerChar: 100,
-        imageSrc: null,
-        imageShowSeconds: 4,
-        hmiGoalActive: false,
-        endPoint: 'ws://localhost:9090',
-        textTimeout: null,
-        imageTimeout: null,
-        batteries: {},
-        batteryProgressStyle: {
-          'background-color': '#d0d0d0'
-        }
-      }
-    },
-    methods: {
-      setupClearImage (stamp) {
-        if (this.imageTimeout) {
-          clearTimeout(this.imageTimeout)
-        }
-        var seconds = stamp.secs + 1e-9 * stamp.nsecs
-        this.imageTimeout = setTimeout(() => {
-          this.imageSrc = null
-        }, seconds <= 0.0 ? this.imageShowSeconds * 1000 : seconds * 1000)
-      },
-      setupClearText (seconds) {
-        if (this.textTimeout) {
-          clearTimeout(this.textTimeout)
-        }
-        this.textTimeout = setTimeout(() => {
-          this.text = ''
-        }, seconds <= 0.0 ? this.msPerChar * this.text.length + 2000 : seconds * 1000)
-      },
-      setText (data, seconds = 0) {
-        this.text = data
-        this.setupClearText(seconds)
-      },
-      setupClearBatteryType (key, seconds = 10) {
-        if (this.batteries[key].TypeTimeOut) {
-          clearTimeout(this.batteries[key].TypeTimeOut)
-        }
-        this.batteries[key].TypeTimeOut = setTimeout(() => {
-          this.batteries[key].type = 'dark'
-          this.batteries[key].charging = false
-        }, seconds * 1000)
-      },
-      setupRemoveBattery (key, seconds = 60) {
-        if (this.batteries[key].RemoveTimeOut) {
-          clearTimeout(this.batteries[key].RemoveTimeOut)
-        }
-        this.batteries[key].RemoveTimeOut = setTimeout(() => {
-          console.log('deleting battery', key)
-          this.$delete(this.batteries, key)
-        }, seconds * 1000)
-      },
-      OnConnection () {
-        this.setText('Connection established', 1)
-      },
-      OnClose () {
-        this.setText('Connection lost', 1e5)
-      },
-      handleBatteryMsg (msg) {
-        var type = 'info'
-        const percentage = Math.round(msg.percentage * 100)
-        if (percentage > 40) {
-          type = 'success'
-        } else if (percentage > 20) {
-          type = 'warning'
-        } else {
-          type = 'danger'
-        }
-
-        const batteries = this.batteries
-        const key = msg.location
-
-        // Get battery or create new one
-        var battery
-        if (!batteries.hasOwnProperty(key)) {
-          battery = {
-            percentage: null,
-            type: null,
-            charging: null,
-            TypeTimeOut: null,
-            RemoveTimeOut: null
-          }
-        } else {
-          battery = batteries[key]
-        }
-        // Only update the state, not the timeouts, which are done
-        // at the end
-        battery.percentage = percentage
-        battery.type = type
-        battery.charging = msg.power_supply_status === 1 // POWER_SUPPLY_STATUS_CHARGING = 1
-
-        // Update current battery
-        batteries[key] = battery
-
-        // Order batteries, so it shown on alphabetical order
-        const ordered = {}
-        Object.keys(batteries).sort().forEach(function (key) {
-          ordered[key] = batteries[key]
-        })
-
-        // Update batteries with ordered
-        this.batteries = ordered
-
-        // Setup Timeouts for this battery
-        this.setupClearBatteryType(key, 10)
-        this.setupRemoveBattery(key, 60)
-      }
-    },
-    mounted () {
-      if (!process.env.NO_FULLSCREEN) {
-        remote.getCurrentWindow().setFullScreen(true)
-      }
-      const remote2 = window.require('electron').remote
-      const argv = remote2.process.argv
-      const index = argv.length - 1
-      var url = this.endPoint
-      if (index > 0) {
-        const host = argv[index]
-        url = `ws://${host}:9090`
-      }
-
-      AutoRos.ros.on('connection', this.OnConnection.bind(this))
-      AutoRos.ros.on('close', this.OnClose.bind(this))
-      AutoRos.connect(url)
-      this.textTopic.subscribe((msg) => {
-        this.setText(msg.data)
-      })
-      this.imageTopic.subscribe((msg) => {
-        this.imageSrc = imageToBase64JpegString(msg)
-        this.setupClearImage(msg.header.stamp)
-      })
-      this.compressedImageTopic.subscribe((msg) => {
-        this.imageSrc = 'data:image/jpeg;base64,' + msg.data
-        this.setupClearImage(msg.header.stamp)
-      })
-      this.hmiStatusTopic.subscribe((msg) => {
-        var active = false
-        msg.status_list.forEach((status) => {
-          if (status.status === 1) {
-            active = true
-          }
-        })
-        this.hmiGoalActive = active
-      })
-      this.batteryTopic.subscribe(this.handleBatteryMsg)
-    },
-    beforeDestroy () {
-      this.textTopic.unsubscribe({})
-      this.imageTopic.unsubscribe({})
-      this.compressedImageTopic.unsubscribe({})
-      this.hmiStatusTopic.unsubscribe({})
-      this.batteryTopic.unsubscribe({})
-    }
-  }
+}
 </script>
 
 <style>
@@ -357,7 +357,6 @@ body {
   width: auto;
 }
 
-
 .backgroundArea {
   z-index: -100;
   width: 1024px;
@@ -396,7 +395,6 @@ body {
   height: 80px;
   animation-delay: 0s;
 }
-
 
 .circles li:nth-child(2){
   left: 10%;
