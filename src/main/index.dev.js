@@ -8,9 +8,9 @@
 /* eslint-disable */
 
 const { app } = require('electron')
-const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer')
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
-// Install `electron-debug` with `devtron`
+// Install `electron-debug`
 // NB: Don't open dev tools with this, it is causing the error
 require('electron-debug')()
 
