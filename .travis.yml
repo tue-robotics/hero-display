@@ -10,8 +10,9 @@ node_js:
 cache:
   directories:
   - node_modules
-  - "$HOME/.electron"
   - "$HOME/.cache"
+  - "$HOME/.electron"
+  - "$HOME/.npm"
 
 addons:
   apt:
