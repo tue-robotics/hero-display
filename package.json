@@ -124,7 +124,7 @@
     "chalk": "^4.1.0",
     "copy-webpack-plugin": "^6.0.3",
     "cross-env": "^7.0.2",
-    "css-loader": "^4.2.0",
+    "css-loader": "^4.2.1",
     "del": "^5.1.0",
     "dependency-check": "^4.1.0",
     "electron": "^8.0.0",
