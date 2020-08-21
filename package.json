@@ -89,7 +89,7 @@
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
     "roslib": "^1.1.0",
-    "vue": "^2.6.11",
+    "vue": "^2.6.12",
     "vue-awesome": "^4.1.0",
     "vue-electron": "^1.0.6",
     "vue-typer": "^1.2.0"
@@ -159,7 +159,7 @@
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.9.3",
     "vue-style-loader": "^4.1.2",
-    "vue-template-compiler": "^2.6.11",
+    "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
