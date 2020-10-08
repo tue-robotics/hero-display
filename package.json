@@ -164,7 +164,7 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.25.0",
-    "webpack-merge": "^5.1.4"
+    "webpack-merge": "^5.2.0"
   },
   "optionalDependencies": {
     "bufferutil": "4.0.1",
