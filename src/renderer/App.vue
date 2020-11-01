@@ -50,14 +50,19 @@
 </template>
 
 <script>
+/* eslint new-cap: ["error", { "properties": false }] */
+/* eslint node/prefer-global/buffer: [error, never] */
+
 import { remote } from 'electron'
 import AutoRos from './services/ros'
 import ROSLIB from 'roslib'
 import jpeg from 'jpeg-js'
 
+const { ArrayBuffer, Buffer, Uint8Array } = require('buffer')
+
 function imageToBase64JpegString (msg) {
   var raw = atob(msg.data)
-  var array = new Uint8Array(new ArrayBuffer(raw.length))
+  var array = new Uint8Array.from(new ArrayBuffer.alloc(raw.length))
   for (let i = 0; i < raw.length; i++) {
     array[i] = raw.charCodeAt(i)
   }

@@ -3,6 +3,9 @@
 import { app, BrowserWindow } from 'electron'
 const path = require('path')
 
+// Can be remove after upgrading to electron >= 9
+app.allowRendererProcessReuse = true
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -26,9 +29,10 @@ function createWindow () {
     useContentSize: true,
     width: 1024,
     webPreferences: {
+      enableRemoteModule: true,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      webSecurity: false
+      webSecurity: true
     }
   })
 
