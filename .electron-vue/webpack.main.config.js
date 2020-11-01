@@ -14,7 +14,7 @@ let mainConfig = {
   },
   externals: [
     ...Object.keys(dependencies || {}),
-    {'electron-debug': 'electron-debug'}
+    'electron-debug',
   ],
   module: {
     rules: [
