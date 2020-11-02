@@ -61,13 +61,13 @@ import jpeg from 'jpeg-js'
 const { ArrayBuffer, Buffer, Uint8Array } = require('buffer')
 
 function imageToBase64JpegString (msg) {
-  var raw = atob(msg.data)
-  var array = new Uint8Array.from(new ArrayBuffer.alloc(raw.length))
+  const raw = atob(msg.data)
+  const array = new Uint8Array.from(new ArrayBuffer.alloc(raw.length))
   for (let i = 0; i < raw.length; i++) {
     array[i] = raw.charCodeAt(i)
   }
 
-  var frameData = Buffer.alloc(msg.width * msg.height * 4)
+  const frameData = Buffer.alloc(msg.width * msg.height * 4)
   for (let i = 0; i < msg.width * msg.height; i++) {
     if (msg.encoding === 'rgb8') {
       frameData[4 * i + 0] = array[3 * i + 0]
@@ -81,7 +81,7 @@ function imageToBase64JpegString (msg) {
     frameData[4 * i + 1] = array[3 * i + 1]
     frameData[4 * i + 3] = 0
   }
-  var rawImageData = {
+  const rawImageData = {
     data: frameData,
     width: msg.width,
     height: msg.height
@@ -137,7 +137,7 @@ export default {
       if (this.imageTimeout) {
         clearTimeout(this.imageTimeout)
       }
-      var seconds = stamp.secs + 1e-9 * stamp.nsecs
+      const seconds = stamp.secs + 1e-9 * stamp.nsecs
       this.imageTimeout = setTimeout(() => {
         this.imageSrc = null
       }, seconds <= 0.0 ? this.imageShowSeconds * 1000 : seconds * 1000)
@@ -179,7 +179,7 @@ export default {
       this.setText('Connection lost', 1e5)
     },
     handleBatteryMsg (msg) {
-      var type = 'info'
+      let type = 'info'
       const percentage = Math.round(msg.percentage * 100)
       if (percentage > 40) {
         type = 'success'
@@ -193,7 +193,7 @@ export default {
       const key = msg.location
 
       // Get battery or create new one
-      var battery
+      let battery
       if (!Object.prototype.hasOwnProperty.call(batteries, key)) {
         battery = {
           percentage: null,
@@ -235,7 +235,7 @@ export default {
     const remote2 = window.require('electron').remote
     const argv = remote2.process.argv
     const index = argv.length - 1
-    var url = this.endPoint
+    let url = this.endPoint
     if (index > 0) {
       const host = argv[index]
       url = `ws://${host}:9090`
@@ -256,7 +256,7 @@ export default {
       this.setupClearImage(msg.header.stamp)
     })
     this.hmiStatusTopic.subscribe((msg) => {
-      var active = false
+      let active = false
       msg.status_list.forEach((status) => {
         if (status.status === 1) {
           active = true
