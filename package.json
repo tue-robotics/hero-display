@@ -144,7 +144,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.5.0",
     "mini-css-extract-plugin": "^1.2.1",
-    "mocha": "^8.2.0",
+    "mocha": "^8.2.1",
     "multispinner": "^0.2.1",
     "node-loader": "^1.0.2",
     "node-sass": "^5.0.0",
