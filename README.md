@@ -4,34 +4,34 @@
 
 Display sink for the hero display that presents information to the user.
 
-# Build Setup
+## Build Setup
 
 ```bash
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:9080
-npm run dev
+# Compiles and hot-reloads for development
+npm run electron:serve
 
-# build electron application for production
+# Compiles and minifies for production
 npm run build
 
-# run unit & end-to-end tests
-npm test
+# Run your unit tests
+npm run test:unit
 
-# lint all JS/Vue component files in `src/`
+# Lints and fixes files
 npm run lint
 ```
 
-# Test hero display
+## Test hero display
 
-## Dependencies
+### Dependencies
 
 ```bash
 sudo apt-get install ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-rostopic
 ```
 
-## Run
+### Run
 
 ```bash
 # Launch rosbridge server
@@ -45,8 +45,6 @@ export NO_FULLSCREEN=1 && ./hero-display.AppImage
 ```
 
 ---
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
 
 [travis-image]: https://travis-ci.com/tue-robotics/hero-display.svg?branch=master
 [travis-url]: https://travis-ci.com/tue-robotics/hero-display
