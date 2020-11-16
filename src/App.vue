@@ -1,49 +1,70 @@
 <template>
   <div id="app">
-    <div v-if="hmiGoalActive" id="hmiGoalActive">
+    <div
+      v-if="hmiGoalActive"
+      id="hmiGoalActive"
+    >
       <div>
-        <v-icon name="microphone" scale="20" id="mic" />
-        <v-icon name="spinner" scale="20" pulse id="spinner" />
+        <v-icon
+          id="mic"
+          name="microphone"
+          scale="20"
+        />
+        <v-icon
+          id="spinner"
+          name="spinner"
+          scale="20"
+          pulse
+        />
       </div>
       <small id="hmiGoalActiveText">I'm listening ...</small>
     </div>
-    <div v-else-if="text || imageSrc" id="contentBox">
-      <div v-if="imageSrc" id="image" :style="{backgroundImage: `url(${imageSrc})`}" />
-      <span v-text='text' id="text" :style="{fontSize: imageSrc ? '50px' : '90px'}" />
+    <div
+      v-else-if="text || imageSrc"
+      id="contentBox"
+    >
+      <div
+        v-if="imageSrc"
+        id="image"
+        :style="{backgroundImage: `url(${imageSrc})`}"
+      />
+      <span
+        id="text"
+        :style="{fontSize: imageSrc ? '50px' : '90px'}"
+        v-text="text"
+      />
     </div>
 
     <!-- logo -->
-    <div v-if="hmiGoalActive || text || imageSrc" id="logoSmall">
-      <img src="static/logo.png" />
+    <div
+      v-if="hmiGoalActive || text || imageSrc"
+      id="logoSmall"
+    >
+      <img src="./assets/logo.png">
     </div>
-    <div v-else id="logoBig">
-      <img src="static/logo.png" />
+    <div
+      v-else
+      id="logoBig"
+    >
+      <img src="./assets/logo.png">
     </div>
 
     <!-- battery -->
-    <div v-if="!hmiGoalActive && !text && !imageSrc" id="battery">
-      <b-container fluid class="p-0 m-0">
-        <b-row>
-          <b-col v-for="(v, key) in batteries" :key="key" align="center" id="battery_col" class="pr-0">
-            <span>
-                <h5 vertical-align="text-bottom">
-                  {{key}}
-                  <v-icon v-if="v.charging" name="bolt" id="bolt" />
-                </h5>
-            </span>
-            <b-progress class="w-100" id="batteryProgress" :style="batteryProgressStyle">
-              <b-progress-bar :value="v.percentage" :animated="v.charging" :variant="v.type">
-                <span class="position-absolute w-100 d-block"><b>{{v.percentage}}%</b></span>
-              </b-progress-bar>
-            </b-progress>
-          </b-col>
-        </b-row>
-      </b-container>
+    <div
+      v-show="!hmiGoalActive && !text && !imageSrc"
+      id="battery"
+    >
+      <Battery
+        :ros="ros"
+      />
     </div>
 
-    <div class="backgroundArea" >
+    <div class="backgroundArea">
       <ul class="circles">
-        <li v-for="index in 10" :key="index" />
+        <li
+          v-for="index in 10"
+          :key="index"
+        />
       </ul>
     </div>
   </div>
@@ -52,6 +73,8 @@
 <script>
 /* eslint new-cap: ["error", { "properties": false }] */
 /* eslint node/prefer-global/buffer: [error, never] */
+
+import Battery from './components/Battery.vue'
 
 import { remote } from 'electron'
 import AutoRos from './services/ros'
@@ -90,9 +113,13 @@ function imageToBase64JpegString (msg) {
 }
 
 export default {
-  name: 'hero-display',
+  name: 'HeroDisplay',
+  components: {
+    Battery
+  },
   data () {
     return {
+      ros: AutoRos.ros,
       textTopic: new ROSLIB.Topic({
         ros: AutoRos.ros,
         name: 'text_to_speech/output',
@@ -113,11 +140,6 @@ export default {
         name: 'hmi/status',
         messageType: 'actionlib_msgs/GoalStatusArray'
       }),
-      batteryTopic: new ROSLIB.Topic({
-        ros: AutoRos.ros,
-        name: 'battery',
-        messageType: 'sensor_msgs/BatteryState'
-      }),
       text: '',
       msPerChar: 100,
       imageSrc: null,
@@ -125,115 +147,14 @@ export default {
       hmiGoalActive: false,
       endPoint: 'ws://localhost:9090',
       textTimeout: null,
-      imageTimeout: null,
-      batteries: {},
-      batteryProgressStyle: {
-        'background-color': '#d0d0d0'
-      }
-    }
-  },
-  methods: {
-    setupClearImage (stamp) {
-      if (this.imageTimeout) {
-        clearTimeout(this.imageTimeout)
-      }
-      const seconds = stamp.secs + 1e-9 * stamp.nsecs
-      this.imageTimeout = setTimeout(() => {
-        this.imageSrc = null
-      }, seconds <= 0.0 ? this.imageShowSeconds * 1000 : seconds * 1000)
-    },
-    setupClearText (seconds) {
-      if (this.textTimeout) {
-        clearTimeout(this.textTimeout)
-      }
-      this.textTimeout = setTimeout(() => {
-        this.text = ''
-      }, seconds <= 0.0 ? this.msPerChar * this.text.length + 2000 : seconds * 1000)
-    },
-    setText (data, seconds = 0) {
-      this.text = data
-      this.setupClearText(seconds)
-    },
-    setupClearBatteryType (key, seconds = 10) {
-      if (this.batteries[key].TypeTimeOut) {
-        clearTimeout(this.batteries[key].TypeTimeOut)
-      }
-      this.batteries[key].TypeTimeOut = setTimeout(() => {
-        this.batteries[key].type = 'dark'
-        this.batteries[key].charging = false
-      }, seconds * 1000)
-    },
-    setupRemoveBattery (key, seconds = 60) {
-      if (this.batteries[key].RemoveTimeOut) {
-        clearTimeout(this.batteries[key].RemoveTimeOut)
-      }
-      this.batteries[key].RemoveTimeOut = setTimeout(() => {
-        console.log('deleting battery', key)
-        this.$delete(this.batteries, key)
-      }, seconds * 1000)
-    },
-    OnConnection () {
-      this.setText('Connection established', 1)
-    },
-    OnClose () {
-      this.setText('Connection lost', 1e5)
-    },
-    handleBatteryMsg (msg) {
-      let type = 'info'
-      const percentage = Math.round(msg.percentage * 100)
-      if (percentage > 40) {
-        type = 'success'
-      } else if (percentage > 20) {
-        type = 'warning'
-      } else {
-        type = 'danger'
-      }
-
-      const batteries = this.batteries
-      const key = msg.location
-
-      // Get battery or create new one
-      let battery
-      if (!Object.prototype.hasOwnProperty.call(batteries, key)) {
-        battery = {
-          percentage: null,
-          type: null,
-          charging: null,
-          TypeTimeOut: null,
-          RemoveTimeOut: null
-        }
-      } else {
-        battery = batteries[key]
-      }
-      // Only update the state, not the timeouts, which are done
-      // at the end
-      battery.percentage = percentage
-      battery.type = type
-      battery.charging = msg.power_supply_status === 1 // POWER_SUPPLY_STATUS_CHARGING = 1
-
-      // Update current battery
-      batteries[key] = battery
-
-      // Order batteries, so it shown on alphabetical order
-      const ordered = {}
-      Object.keys(batteries).sort().forEach(function (key) {
-        ordered[key] = batteries[key]
-      })
-
-      // Update batteries with ordered
-      this.batteries = ordered
-
-      // Setup Timeouts for this battery
-      this.setupClearBatteryType(key, 10)
-      this.setupRemoveBattery(key, 60)
+      imageTimeout: null
     }
   },
   mounted () {
-    if (!process.env.NO_FULLSCREEN) {
+    if (!remote.process.env.NO_FULLSCREEN) {
       remote.getCurrentWindow().setFullScreen(true)
     }
-    const remote2 = window.require('electron').remote
-    const argv = remote2.process.argv
+    const argv = remote.process.argv
     const index = argv.length - 1
     let url = this.endPoint
     if (index > 0) {
@@ -264,14 +185,41 @@ export default {
       })
       this.hmiGoalActive = active
     })
-    this.batteryTopic.subscribe(this.handleBatteryMsg)
   },
-  beforeDestroy () {
+  methods: {
+    setupClearImage (stamp) {
+      if (this.imageTimeout) {
+        clearTimeout(this.imageTimeout)
+      }
+      const seconds = stamp.secs + 1e-9 * stamp.nsecs
+      this.imageTimeout = setTimeout(() => {
+        this.imageSrc = null
+      }, seconds <= 0.0 ? this.imageShowSeconds * 1000 : seconds * 1000)
+    },
+    setupClearText (seconds) {
+      if (this.textTimeout) {
+        clearTimeout(this.textTimeout)
+      }
+      this.textTimeout = setTimeout(() => {
+        this.text = ''
+      }, seconds <= 0.0 ? this.msPerChar * this.text.length + 2000 : seconds * 1000)
+    },
+    setText (data, seconds = 0) {
+      this.text = data
+      this.setupClearText(seconds)
+    },
+    OnConnection () {
+      this.setText('Connection established', 1)
+    },
+    OnClose () {
+      this.setText('Connection lost', 1e5)
+    }
+  },
+  beforeUnmount () {
     this.textTopic.unsubscribe({})
     this.imageTopic.unsubscribe({})
     this.compressedImageTopic.unsubscribe({})
     this.hmiStatusTopic.unsubscribe({})
-    this.batteryTopic.unsubscribe({})
   }
 }
 </script>
@@ -319,6 +267,8 @@ body {
   position: absolute;
   top: 0px;
   left: 0px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 #hmiGoalActive {
   padding: 70px;
