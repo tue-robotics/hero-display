@@ -21,6 +21,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "cross-env NO_FULLSCREEN=1 vue-cli-service test:unit",
+    "test": "npm run test:unit",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve localhost",
