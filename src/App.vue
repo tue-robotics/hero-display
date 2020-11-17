@@ -307,7 +307,6 @@ body {
 }
 
 #bolt {
-  color: #FFFF00;
   height: 1rem;
   width: auto;
 }
