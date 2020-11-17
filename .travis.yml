@@ -7,8 +7,8 @@ node_js:
 
 cache:
   directories:
-  - node_modules
   - "$HOME/.cache"
+  - "$HOME/.npm"
 
 addons:
   apt:
@@ -18,7 +18,7 @@ addons:
     - xvfb
 
 install:
-- npm install
+- npm ci
 
 before_script:
 - export DISPLAY=':99.0'
