@@ -297,6 +297,9 @@ body {
   left: 0px;
   margin: 20px;
 }
+#batteryProgress {
+  height: 2rem;
+}
 
 #battery_col {
   width: 100px;
