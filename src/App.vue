@@ -298,17 +298,8 @@ body {
   margin: 20px;
 }
 
-#batteryProgress {
-  height: 2rem;
-}
-
 #battery_col {
-  width: 120px;
-}
-
-#bolt {
-  height: 1rem;
-  width: auto;
+  width: 100px;
 }
 
 .backgroundArea {
