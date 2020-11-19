@@ -303,6 +303,10 @@ body {
 
 #battery_col {
   width: 100px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .backgroundArea {
