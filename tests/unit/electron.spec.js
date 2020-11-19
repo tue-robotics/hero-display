@@ -10,7 +10,7 @@ chai.use(chaiAsPromised)
 describe('Application launch', function () {
   this.timeout(30000)
 
-  before(function () {
+  beforeEach(function () {
     return testWithSpectron(spectron).then(instance => {
       this.app = instance.app
       this.stopServe = instance.stopServe
@@ -21,7 +21,7 @@ describe('Application launch', function () {
   // chaiAsPromised.transferPromiseness = this.app.transferPromiseness
   // })
 
-  after(function () {
+  afterEach(function () {
     if (this.app && this.app.isRunning()) {
       return this.stopServe()
     }
