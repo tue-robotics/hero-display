@@ -216,10 +216,10 @@ export default {
     }
   },
   beforeUnmount () {
-    this.textTopic.unsubscribe({})
-    this.imageTopic.unsubscribe({})
-    this.compressedImageTopic.unsubscribe({})
-    this.hmiStatusTopic.unsubscribe({})
+    this.textTopic.unsubscribe()
+    this.imageTopic.unsubscribe()
+    this.compressedImageTopic.unsubscribe()
+    this.hmiStatusTopic.unsubscribe()
   }
 }
 </script>
