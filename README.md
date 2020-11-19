@@ -1,6 +1,6 @@
 # hero-display
-[![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![devDependency Status][daviddm-image-dev]][daviddm-url-dev] [![optionalDependencies Status][daviddm-image-optional]][daviddm-url-optional]
 
+[![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![devDependency Status][daviddm-image-dev]][daviddm-url-dev] [![optionalDependencies Status][daviddm-image-optional]][daviddm-url-optional]
 
 Display sink for the hero display that presents information to the user.
 
@@ -14,10 +14,10 @@ npm install
 npm run electron:serve
 
 # Compiles and minifies for production
-npm run build
+npm run electron:build
 
 # Run your unit tests
-npm run test:unit
+NO_FULLSCREEN=1 npm run test:unit
 
 # Lints and fixes files
 npm run lint
@@ -41,8 +41,11 @@ roslaunch rosbridge_server rosbridge_websocket.launch
 rostopic pub /text_to_speech/output std_msgs/String -- "I am hero, an awesome robot!"
 
 # Run hero-display executable
-export NO_FULLSCREEN=1 && ./hero-display.AppImage
+NO_FULLSCREEN=1 ./dist_electron/hero-display.AppImage
 ```
+
+To connect to a different rosbridge webserver,
+add the desired hostname or ip-address as final argument.
 
 ---
 
