@@ -39,16 +39,11 @@ describe('Application launch', function () {
     return this.app.client.browserWindow.isVisible().should.eventually.be.true
   })
 
-  it('Correct window bounds', function () {
-    return Promise.all([
-      this.app.client.browserWindow.getBounds()
-        .should.eventually.have.property('width').and.be.equal(1024),
-      this.app.client.browserWindow.getBounds()
-        .should.eventually.have.property('height').and.be.equal(600)
-    ])
+  it('Window bounds are corect', function () {
+    return this.app.client.browserWindow.getBounds().should.eventually.include({ width: 1024, height: 600 })
   })
 
-  it('Correct window title', function () {
+  it('Window title is correct', function () {
     return this.app.client.browserWindow.getTitle().should.eventually.be.equal('hero-display')
   })
 })
