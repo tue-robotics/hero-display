@@ -17,9 +17,9 @@ describe('Application launch', function () {
     })
   })
 
-  before(function () {
-    chaiAsPromised.transferPromiseness = this.app.transferPromiseness
-  })
+  // before(function () {
+  // chaiAsPromised.transferPromiseness = this.app.transferPromiseness
+  // })
 
   after(function () {
     if (this.app && this.app.isRunning()) {
