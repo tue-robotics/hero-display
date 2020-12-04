@@ -75,7 +75,7 @@
 /* eslint node/prefer-global/buffer: [error, never] */
 
 import { remote } from 'electron'
-import { AutoRos } from 'hero-vue'
+import { AutoRos, Battery } from 'hero-vue'
 import ROSLIB from 'roslib'
 import jpeg from 'jpeg-js'
 
@@ -112,6 +112,9 @@ function imageToBase64JpegString (msg) {
 
 export default {
   name: 'HeroDisplay',
+  components: {
+    Battery
+  },
   data () {
     return {
       ros: AutoRos.ros,
@@ -215,7 +218,7 @@ export default {
     OnClose () {
       this.setText('Connection lost', 1e5)
     }
-  },
+  }
 }
 </script>
 
