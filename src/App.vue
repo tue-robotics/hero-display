@@ -74,10 +74,8 @@
 /* eslint new-cap: ["error", { "properties": false }] */
 /* eslint node/prefer-global/buffer: [error, never] */
 
-import Battery from './components/Battery.vue'
-
 import { remote } from 'electron'
-import AutoRos from './services/ros'
+import { AutoRos } from 'hero-vue'
 import ROSLIB from 'roslib'
 import jpeg from 'jpeg-js'
 
@@ -114,9 +112,6 @@ function imageToBase64JpegString (msg) {
 
 export default {
   name: 'HeroDisplay',
-  components: {
-    Battery
-  },
   data () {
     return {
       ros: AutoRos.ros,
