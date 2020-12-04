@@ -181,6 +181,12 @@ export default {
       this.hmiGoalActive = active
     })
   },
+  beforeUnmount () {
+    this.textTopic.unsubscribe()
+    this.imageTopic.unsubscribe()
+    this.compressedImageTopic.unsubscribe()
+    this.hmiStatusTopic.unsubscribe()
+  },
   methods: {
     setupClearImage (stamp) {
       if (this.imageTimeout) {
@@ -210,12 +216,6 @@ export default {
       this.setText('Connection lost', 1e5)
     }
   },
-  beforeUnmount () {
-    this.textTopic.unsubscribe()
-    this.imageTopic.unsubscribe()
-    this.compressedImageTopic.unsubscribe()
-    this.hmiStatusTopic.unsubscribe()
-  }
 }
 </script>
 
