@@ -75,7 +75,8 @@
 /* eslint node/prefer-global/buffer: [error, never] */
 
 import { remote } from 'electron'
-import { AutoRos, Battery } from 'hero-vue'
+import AutoRos from 'auto-ros'
+import { Battery } from 'hero-vue'
 import ROSLIB from 'roslib'
 import jpeg from 'jpeg-js'
 
