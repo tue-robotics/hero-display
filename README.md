@@ -47,8 +47,6 @@ NO_FULLSCREEN=1 ./dist_electron/hero-display.AppImage
 To connect to a different rosbridge webserver,
 add the desired hostname or ip-address as final argument.
 
----
-
 [travis-image]: https://travis-ci.com/tue-robotics/hero-display.svg?branch=master
 [travis-url]: https://travis-ci.com/tue-robotics/hero-display
 
