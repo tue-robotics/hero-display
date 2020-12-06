@@ -1,6 +1,6 @@
 # hero-display
 
-[![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![devDependency Status][daviddm-image-dev]][daviddm-url-dev] [![optionalDependencies Status][daviddm-image-optional]][daviddm-url-optional]
+[![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![devDependency Status][daviddm-image-dev]][daviddm-url-dev]
 
 Display sink for the hero display that presents information to the user.
 
@@ -56,5 +56,3 @@ add the desired hostname or ip-address as final argument.
 [daviddm-url]: https://david-dm.org/tue-robotics/hero-display
 [daviddm-image-dev]: https://david-dm.org/tue-robotics/hero-display/dev-status.svg
 [daviddm-url-dev]: https://david-dm.org/tue-robotics/hero-display?type=dev
-[daviddm-image-optional]: https://david-dm.org/tue-robotics/hero-display/optional-status.svg
-[daviddm-url-optional]: https://david-dm.org/tue-robotics/hero-display?type=optional
