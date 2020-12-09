@@ -74,10 +74,9 @@
 /* eslint new-cap: ["error", { "properties": false }] */
 /* eslint node/prefer-global/buffer: [error, never] */
 
-import Battery from './components/Battery.vue'
-
 import { remote } from 'electron'
-import AutoRos from './services/ros'
+import AutoRos from 'auto-ros'
+import { Battery } from 'hero-vue'
 import ROSLIB from 'roslib'
 import jpeg from 'jpeg-js'
 
@@ -186,6 +185,12 @@ export default {
       this.hmiGoalActive = active
     })
   },
+  beforeUnmount () {
+    this.textTopic.unsubscribe()
+    this.imageTopic.unsubscribe()
+    this.compressedImageTopic.unsubscribe()
+    this.hmiStatusTopic.unsubscribe()
+  },
   methods: {
     setupClearImage (stamp) {
       if (this.imageTimeout) {
@@ -214,12 +219,6 @@ export default {
     OnClose () {
       this.setText('Connection lost', 1e5)
     }
-  },
-  beforeUnmount () {
-    this.textTopic.unsubscribe()
-    this.imageTopic.unsubscribe()
-    this.compressedImageTopic.unsubscribe()
-    this.hmiStatusTopic.unsubscribe()
   }
 }
 </script>
