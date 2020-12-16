@@ -4,17 +4,17 @@
       v-if="hmiGoalActive"
       id="hmiGoalActive"
     >
-      <div>
-        <v-icon
+      <div id="mic_spinner">
+        <font-awesome-icon
           id="mic"
-          name="microphone"
-          scale="20"
+          icon="microphone"
+          class="fa-icon"
         />
-        <v-icon
+        <font-awesome-icon
           id="spinner"
-          name="spinner"
-          scale="20"
+          icon="spinner"
           pulse
+          class="fa-icon"
         />
       </div>
       <small id="hmiGoalActiveText">I'm listening ...</small>
@@ -80,6 +80,12 @@ import { Battery } from 'hero-vue'
 import ROSLIB from 'roslib'
 import jpeg from 'jpeg-js'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faMicrophone, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faMicrophone)
+library.add(faSpinner)
+
 const { ArrayBuffer, Buffer, Uint8Array } = require('buffer')
 
 function imageToBase64JpegString (msg) {
@@ -114,7 +120,8 @@ function imageToBase64JpegString (msg) {
 export default {
   name: 'HeroDisplay',
   components: {
-    Battery
+    Battery,
+    'font-awesome-icon': FontAwesomeIcon
   },
   data () {
     return {
@@ -231,8 +238,18 @@ export default {
   justify-content: center;
   align-items: center;
 }
+#mic_spinner svg {
+  height: 320px;
+  vertical-align: -0.125em;
+  font-size: 20em;
+}
 #mic {
   color: #067340;
+  width: 240px;
+}
+#spinner {
+  color: #df9101;
+  width: 340px;
 }
 #image {
   width: 100%;
@@ -240,9 +257,6 @@ export default {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center; /* Center the image */
-}
-#spinner {
-  color: #df9101;
 }
 body {
   background-color: #171717;
