@@ -39,7 +39,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/vue-fontawesome": "^2.0.0",
     "auto-ros": "^0.1.1",
-    "hero-vue": "^0.3.0",
+    "hero-vue": "^0.3.4",
     "jpeg-js": "^0.4.2",
     "roslib": "^1.1.0",
     "vue": "^2.6.11"
