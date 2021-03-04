@@ -74,7 +74,6 @@
 /* eslint new-cap: ["error", { "properties": false }] */
 /* eslint node/prefer-global/buffer: [error, never] */
 
-import { remote } from 'electron'
 import AutoRos from 'auto-ros'
 import { Battery } from 'hero-vue'
 import ROSLIB from 'roslib'
@@ -85,6 +84,8 @@ import { faMicrophone, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faMicrophone)
 library.add(faSpinner)
+
+const remote = require('@electron/remote')
 
 const { ArrayBuffer, Buffer, Uint8Array } = require('buffer')
 
