@@ -4,6 +4,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: ""
+      prefix-development: ""
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
