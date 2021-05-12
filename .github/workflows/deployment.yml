@@ -22,7 +22,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - uses: actions-ecosystem/action-regex-match@v2
+      - uses: actions-ecosystem/action-regex-match@v2.0.1
         id: regex-match
         with:
           text: ${{ github.ref }}
