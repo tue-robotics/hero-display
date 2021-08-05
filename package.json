@@ -36,7 +36,7 @@
   "main": "background.js",
   "dependencies": {
     "@electron/remote": "^1.2.1",
-    "@fortawesome/fontawesome-svg-core": "^1.2.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.0",
     "@fortawesome/vue-fontawesome": "^2.0.0",
     "auto-ros": "^0.1.2",
