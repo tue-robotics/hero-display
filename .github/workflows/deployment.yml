@@ -37,7 +37,6 @@ jobs:
         with:
           run: --server-args="-screen 0, 1024x600x24" npm test
 
-      
       - name: Create Release & Upload Release Asset
         id: create-release-and-upload-release-asset
         uses: softprops/action-gh-release@v1
