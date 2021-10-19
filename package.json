@@ -38,7 +38,7 @@
     "@electron/remote": "^1.2.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/vue-fontawesome": "^2.0.5",
+    "@fortawesome/vue-fontawesome": "^2.0.6",
     "auto-ros": "^0.1.2",
     "hero-vue": "^0.3.4",
     "jpeg-js": "^0.4.0",
