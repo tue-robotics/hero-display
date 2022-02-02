@@ -1,9 +1,9 @@
 'use strict'
 
 import { app, protocol, BrowserWindow } from 'electron'
-const path = require("path")
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+const path = require('path')
 const remote = require('@electron/remote/main')
 remote.initialize()
 const isDevelopment = process.env.NODE_ENV !== 'production'
