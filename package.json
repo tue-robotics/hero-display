@@ -43,7 +43,7 @@
     "hero-vue": "^0.3.7",
     "jpeg-js": "^0.4.0",
     "roslib": "^1.2.0",
-    "vue": "^2.6.14"
+    "vue": "^3.2.30"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.15",
