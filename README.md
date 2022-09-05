@@ -1,6 +1,6 @@
 # hero-display
 
-[![CI][gh-actions-image]][gh-actions-url] [![Dependency Status][daviddm-image]][daviddm-url] [![devDependency Status][daviddm-image-dev]][daviddm-url-dev]
+[![CI](https://github.com/tue-robotics/hero-display/actions/workflows/main.yml/badge.svg)](https://github.com/tue-robotics/hero-display/actions/workflows/main.yml) [![Dependency Status][daviddm-image]][daviddm-url] [![devDependency Status][daviddm-image-dev]][daviddm-url-dev]
 
 Display sink for the hero display that presents information to the user.
 
@@ -46,9 +46,6 @@ NO_FULLSCREEN=1 ./dist_electron/hero-display.AppImage
 
 To connect to a different rosbridge webserver,
 add the desired hostname or ip-address as final argument.
-
-[gh-actions-image]: https://github.com/tue-robotics/hero-display/workflows/CI/badge.svg
-[gh-actions-url]: https://github.com/tue-robotics/hero-display/actions
 
 [daviddm-image]: https://david-dm.org/tue-robotics/hero-display/status.svg
 [daviddm-url]: https://david-dm.org/tue-robotics/hero-display
