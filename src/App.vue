@@ -129,7 +129,7 @@ export default {
       ros: AutoRos.ros,
       textTopic: new ROSLIB.Topic({
         ros: AutoRos.ros,
-        name: 'text_to_speech/output',
+        name: '/talking_sentence',
         messageType: 'std_msgs/String'
       }),
       imageTopic: new ROSLIB.Topic({
