@@ -72,7 +72,6 @@
 
 <script>
 /* eslint new-cap: ["error", { "properties": false }] */
-/* eslint node/prefer-global/buffer: [error, never] */
 
 import AutoRos from 'auto-ros'
 import { Battery } from 'hero-vue'
