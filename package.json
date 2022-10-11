@@ -34,7 +34,6 @@
     "major": "npm version major -m 'v%s' && npm run postpublish",
     "postpublish": "git push && git push --tags"
   },
-  "main": "background.js",
   "dependencies": {
     "@electron/remote": "^2.0.7",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
