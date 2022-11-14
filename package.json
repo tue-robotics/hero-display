@@ -40,7 +40,7 @@
     "@electron/remote": "^2.0.7",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
-    "@fortawesome/vue-fontawesome": "^2.0.6",
+    "@fortawesome/vue-fontawesome": "^3.0.2",
     "auto-ros": "^0.1.5",
     "hero-vue": "^0.3.7",
     "jpeg-js": "^0.4.4",
