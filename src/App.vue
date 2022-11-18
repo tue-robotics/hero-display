@@ -55,7 +55,7 @@
       id="battery"
     >
       <Battery
-        :ros="ros"
+        :ros="autoRos.ros"
       />
     </div>
 
@@ -87,6 +87,8 @@ library.add(faSpinner)
 const remote = require('@electron/remote')
 
 const { ArrayBuffer, Buffer, Uint8Array } = require('buffer')
+
+const autoRos = new AutoRos()
 
 function imageToBase64JpegString (msg) {
   const raw = atob(msg.data)
@@ -125,24 +127,24 @@ export default {
   },
   data () {
     return {
-      ros: AutoRos.ros,
+      autoRos,
       textTopic: new ROSLIB.Topic({
-        ros: AutoRos.ros,
+        ros: autoRos.ros,
         name: 'text_to_speech/output',
         messageType: 'std_msgs/String'
       }),
       imageTopic: new ROSLIB.Topic({
-        ros: AutoRos.ros,
+        ros: autoRos.ros,
         name: 'image_from_ros',
         messageType: 'sensor_msgs/Image'
       }),
       compressedImageTopic: new ROSLIB.Topic({
-        ros: AutoRos.ros,
+        ros: autoRos.ros,
         name: 'hmi/image',
         messageType: 'sensor_msgs/CompressedImage'
       }),
       hmiStatusTopic: new ROSLIB.Topic({
-        ros: AutoRos.ros,
+        ros: autoRos.ros,
         name: 'hmi/status',
         messageType: 'actionlib_msgs/GoalStatusArray'
       }),
@@ -168,9 +170,9 @@ export default {
       url = `ws://${host}:9090`
     }
 
-    AutoRos.ros.on('connection', this.OnConnection.bind(this))
-    AutoRos.ros.on('close', this.OnClose.bind(this))
-    AutoRos.connect(url)
+    this.autoRos.ros.on('connection', this.OnConnection.bind(this))
+    this.autoRos.ros.on('close', this.OnClose.bind(this))
+    this.autoRos.connect(url)
     this.textTopic.subscribe((msg) => {
       this.setText(msg.data)
     })
