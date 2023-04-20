@@ -106,7 +106,7 @@ function imageToBase64JpegString (msg) {
       frameData[4 * i + 0] = array[3 * i + 2]
       frameData[4 * i + 2] = array[3 * i + 0]
     } else {
-      console.error('invalid encoding', msg.encoding)
+      console.error('invalid encoding', msg.encoding) // eslint-disable-line no-console
     }
     frameData[4 * i + 1] = array[3 * i + 1]
     frameData[4 * i + 3] = 0
