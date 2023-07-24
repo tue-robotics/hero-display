@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div
-      v-if="hmiGoalActive"
+      v-if="hmiGoalActive || pvGetIntentGoalActive"
       id="hmiGoalActive"
     >
       <div id="mic_spinner">
@@ -148,11 +148,17 @@ export default {
         name: 'hmi/status',
         messageType: 'actionlib_msgs/GoalStatusArray'
       }),
+      pvGetIntentStatusTopic: new ROSLIB.Topic({
+        ros: autoRos.ros,
+        name: 'get_intent/status',
+        messageType: 'actionlib_msgs/GoalStatusArray'
+      }),
       text: '',
       msPerChar: 100,
       imageSrc: null,
       imageShowSeconds: 4,
       hmiGoalActive: false,
+      pvGetIntentGoalActive: false,
       endPoint: 'ws://localhost:9090',
       textTimeout: null,
       imageTimeout: null
@@ -193,12 +199,22 @@ export default {
       })
       this.hmiGoalActive = active
     })
+    this.pvGetIntentStatusTopic.subscribe((msg) => {
+      let active = false
+      msg.status_list.forEach((status) => {
+        if (status.status === 1) {
+          active = true
+        }
+      })
+      this.pvGetIntentGoalActive = active
+    })
   },
   beforeUnmount () {
     this.textTopic.unsubscribe()
     this.imageTopic.unsubscribe()
     this.compressedImageTopic.unsubscribe()
     this.hmiStatusTopic.unsubscribe()
+    this.pvGetIntentStatusTopic.unsubscribe()
   },
   methods: {
     setupClearImage (stamp) {
