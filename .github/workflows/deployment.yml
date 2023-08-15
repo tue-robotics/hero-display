@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: npm run electron:build
       - name: Test
-        run: xvfb-run -a --server-args="-screen 0, 1024x600x24" npm test
+        run: xvfb-run -a --server-args="-screen 0, 1025x600x24" npm test
 
       - name: Create Release & Upload Release Asset
         id: create-release-and-upload-release-asset
