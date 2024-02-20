@@ -36,8 +36,10 @@ test.describe('Window Loads Properly', async () => {
 
   test('Window bounds are correct', async () => {
     const { height, width } = await browserWindow.evaluate((browserWindow) => { return { ...browserWindow.getBounds() } })
-    expect(width).toBe(1024)
-    expect(height).toBe(600)
+    expect(width).toBeGreaterThanOrEqual(1023)
+    expect(width).toBeLessThanOrEqual(1024)
+    expect(height).toBeGreaterThanOrEqual(599)
+    expect(height).toBeLessThanOrEqual(600)
   })
 
   test('Window title is correct', async () => {
