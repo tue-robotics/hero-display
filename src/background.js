@@ -1,9 +1,12 @@
+/* global __static */
 'use strict'
 
 import { app, protocol, BrowserWindow } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import { createProtocol } from '@matthijsburgh/vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-require('@electron/remote/main').initialize()
+const path = require('path')
+const remote = require('@electron/remote/main')
+remote.initialize()
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -18,15 +21,17 @@ async function createWindow () {
     width: 1024,
     height: 600,
     useContentSize: true,
+    icon: path.join(__static, 'icon.png'),
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-      preload: 'src/preload.js',
-      enableRemoteModule: true
+      // See MatthijsBurgh.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+      nodeIntegration: !!process.env.ELECTRON_NODE_INTEGRATION,
+      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
+
+  remote.enable(win.webContents)
+
   if (!isDevelopment) {
     // No menu bar in production
     win.removeMenu()
