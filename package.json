@@ -35,11 +35,9 @@
     "dev": "vite dev",
     "format": "prettier --write \"{{electron,src,tests}/**,.}/*.{ts,js,json,yml,css,scss,md,mts,vue}\"",
     "lint": "eslint \"{electron,src,tests}/**/*.{ts,js,vue,json,yml}\" --fix",
-    "generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "prebuild": "rimraf -rf build dist && npm run lint && npm run generate-icons",
     "build": "vue-tsc && vite build && electron-builder --publish=never",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps",
+    "generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "preview": "vite preview",
     "test": "playwright test",
     "clean": "rimraf -rf build dist node_modules"
