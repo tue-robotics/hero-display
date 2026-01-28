@@ -9,6 +9,17 @@
     "email": "MatthijsBurgh@outlook.com",
     "url": "https://github.com/MatthijsBurgh/"
   },
+  "contributors": [
+    {
+      "name": "Matthijs van der Burgh",
+      "email": "MatthijsBurgh@outlook.com",
+      "url": "https://github.com/MatthijsBurgh/"
+    },
+    {
+      "name": "Rein Appeldoorn",
+      "url": "https://github.com/reinzor/"
+    }
+  ],
   "private": true,
   "license": "MIT",
   "repository": {
