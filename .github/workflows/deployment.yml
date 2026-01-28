@@ -32,6 +32,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Test
         run: xvfb-run -a --server-args="-screen 0, 1024x600x24" npm test
 
