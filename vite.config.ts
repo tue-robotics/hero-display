@@ -24,7 +24,7 @@ export default defineConfig(({ command, mode }) => {
 
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG;
 
-  process.env = { ...process.env, ...loadEnv(mode, process.cwd()), NODE_ENV: mode };
+  Object.assign(process.env, loadEnv(mode, process.cwd()), { NODE_ENV: mode });
 
   // Only takes args after `--`
   const electronArgsIndex = process.argv.indexOf("--");
