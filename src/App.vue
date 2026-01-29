@@ -22,7 +22,7 @@
 
     <!-- battery -->
     <div v-show="!hmiGoalActive && !text && !imageSrc" id="battery">
-      <Battery :ros="autoRos.ros" />
+      <Battery id="battery" :ros="autoRos.ros" />
     </div>
 
     <div class="backgroundArea">
@@ -356,7 +356,6 @@
   }
 
   #battery {
-    position: fixed;
     bottom: 0px;
     left: 0px;
     margin: 20px;
@@ -367,6 +366,7 @@
   }
 
   #battery .col {
+    flex: initial;
     width: 100px;
     padding-left: 5px;
     padding-right: 5px;
