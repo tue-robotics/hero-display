@@ -51,6 +51,12 @@ function createWindow() {
     mainWindow.loadFile(join(process.env.BUILD_APP, "index.html"));
   }
 
+  // Make all links open with the browser, not with the application
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("https:")) shell.openExternal(url);
+    return { action: "deny" };
+  });
+
   if (isDevelopment) {
     mainWindow.webContents.openDevTools();
     mainWindow.maximize();
@@ -58,12 +64,6 @@ function createWindow() {
     // No menu bar in production
     mainWindow.removeMenu();
   }
-
-  // Make all links open with the browser, not with the application
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("https:")) shell.openExternal(url);
-    return { action: "deny" };
-  });
 
   if (!process.env.NO_FULLSCREEN) {
     mainWindow.setFullScreen(true);
