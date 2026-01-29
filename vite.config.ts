@@ -10,12 +10,16 @@ import { default as renderer } from "vite-plugin-electron-renderer";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
+  const outDir = "build";
+  const appOutDir = path.join(outDir, "app");
+  const electronOutDir = path.join(outDir, "electron");
+
   const isServe = command === "serve";
   const isBuild = command === "build";
   const isPreview = mode === "production" && isServe;
 
   if (!isPreview) {
-    rmSync("build/electron", { recursive: true, force: true });
+    rmSync(electronOutDir, { recursive: true, force: true });
   }
 
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG;
@@ -45,7 +49,7 @@ export default defineConfig(({ command, mode }) => {
     //   }
     // },
     build: {
-      outDir: "build/app",
+      outDir: appOutDir,
       emptyOutDir: true,
     },
     plugins: [
@@ -61,7 +65,7 @@ export default defineConfig(({ command, mode }) => {
             build: {
               sourcemap,
               minify: isBuild,
-              outDir: "build/electron",
+              outDir: electronOutDir,
               rollupOptions: {
                 external: ["electron"],
                 //external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
@@ -80,8 +84,9 @@ export default defineConfig(({ command, mode }) => {
             build: {
               sourcemap: sourcemap ? "inline" : undefined, // #332
               minify: isBuild,
-              outDir: "build/electron",
+              outDir: electronOutDir,
               rollupOptions: {
+                external: ["electron"],
                 // external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
