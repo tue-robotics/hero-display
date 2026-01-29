@@ -96,23 +96,23 @@
 
   function imageToBase64JpegString(msg: ImageMsg): string {
     const raw = atob(msg.data);
-    const array = new Uint8Array(raw.length);
+    const rawArray = new Uint8Array(raw.length);
 
     for (let i = 0; i < raw.length; i++) {
-      array[i] = raw.charCodeAt(i);
+      rawArray[i] = raw.charCodeAt(i);
     }
 
     const frameData = new Uint8ClampedArray(msg.width * msg.height * 4);
 
     for (let i = 0; i < msg.width * msg.height; i++) {
       if (msg.encoding === "rgb8") {
-        frameData[4 * i + 0] = array[3 * i + 0]; // R
-        frameData[4 * i + 1] = array[3 * i + 1]; // G
-        frameData[4 * i + 2] = array[3 * i + 2]; // B
+        frameData[4 * i + 0] = rawArray[3 * i + 0]; // R
+        frameData[4 * i + 1] = rawArray[3 * i + 1]; // G
+        frameData[4 * i + 2] = rawArray[3 * i + 2]; // B
       } else if (msg.encoding === "bgr8") {
-        frameData[4 * i + 0] = array[3 * i + 2]; // R
-        frameData[4 * i + 1] = array[3 * i + 1]; // G
-        frameData[4 * i + 2] = array[3 * i + 0]; // B
+        frameData[4 * i + 0] = rawArray[3 * i + 2]; // R
+        frameData[4 * i + 1] = rawArray[3 * i + 1]; // G
+        frameData[4 * i + 2] = rawArray[3 * i + 0]; // B
       } else {
         console.error("Invalid encoding", msg.encoding);
       }
