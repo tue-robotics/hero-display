@@ -74,15 +74,14 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  ipcMain.handle("host", () => {
+  ipcMain.handle("host", (): string | undefined => {
     const argv = process.argv.slice(0);
     // Get the host argument from command line
     const hostArg = argv.find((arg) => arg.startsWith("--host="));
-    let host: string;
-    if (hostArg) {
-      host = hostArg.split("=")[1];
+    if (!hostArg) {
+      return undefined;
     }
-    return host;
+    return hostArg.split("=")[1];
   });
 
   if (isDevelopment) {
