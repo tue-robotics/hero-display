@@ -94,6 +94,31 @@
 
   library.add(faMicrophone, faSpinner);
 
+  // Buffer cache for reusing frameData buffers across images with different dimensions
+  // Key: dimension string (e.g., "640x480"), Value: Uint8ClampedArray buffer
+  const frameBufferCache = new Map<string, Uint8ClampedArray>();
+  const MAX_CACHED_BUFFERS = 5; // Limit cache size to prevent unbounded memory growth
+
+  function getOrCreateFrameBuffer(width: number, height: number): Uint8ClampedArray {
+    const key = `${width}x${height}`;
+    const size = width * height * 4;
+
+    const cachedBuffer = frameBufferCache.get(key);
+    if (cachedBuffer) {
+      return cachedBuffer;
+    }
+
+    // If cache is full, remove the oldest entry (first entry in Map)
+    if (frameBufferCache.size >= MAX_CACHED_BUFFERS) {
+      const firstKey = frameBufferCache.keys().next().value;
+      frameBufferCache.delete(firstKey);
+    }
+
+    const buffer = new Uint8ClampedArray(size);
+    frameBufferCache.set(key, buffer);
+    return buffer;
+  }
+
   function imageToBase64JpegString(msg: ImageMsg): string {
     const raw = atob(msg.data);
     const rawArray = new Uint8Array(raw.length);
@@ -102,7 +127,7 @@
       rawArray[i] = raw.charCodeAt(i);
     }
 
-    const frameData = new Uint8ClampedArray(msg.width * msg.height * 4);
+    const frameData = getOrCreateFrameBuffer(msg.width, msg.height);
 
     for (let i = 0; i < msg.width * msg.height; i++) {
       if (msg.encoding === "rgb8") {
