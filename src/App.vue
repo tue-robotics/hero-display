@@ -220,7 +220,7 @@
   }
 
   onMounted(async () => {
-    const host = await window.args.host();
+    const host = (await window?.args?.host()) || null;
     let url = endPoint;
     if (host) {
       url = `ws://${host}:9090`;
