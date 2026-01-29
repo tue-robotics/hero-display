@@ -94,12 +94,16 @@
 
   library.add(faMicrophone, faSpinner);
 
-  // Buffer cache for reusing frameData buffers across images with different dimensions
+  // Buffer cache for reusing frameData buffers to avoid reallocating when processing images with the same dimensions
   // Key: dimension string (e.g., "640x480"), Value: Uint8ClampedArray buffer
   const frameBufferCache = new Map<string, Uint8ClampedArray>();
   const MAX_CACHED_BUFFERS = 5; // Limit cache size to prevent unbounded memory growth
 
   function getOrCreateFrameBuffer(width: number, height: number): Uint8ClampedArray {
+    if (width <= 0 || height <= 0) {
+      throw new Error(`Invalid image dimensions: ${width}x${height}`);
+    }
+
     const key = `${width}x${height}`;
     const size = width * height * 4;
 
