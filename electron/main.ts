@@ -25,6 +25,8 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? join(__dirname, "../../pu
 
 let mainWindow: BrowserWindow | null = null;
 
+app.commandLine.appendArgument("--no-sandbox");
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     icon: join(process.env.PUBLIC, "icon.png"),
