@@ -55,7 +55,12 @@
     "test": "playwright test",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
-    "clean": "rimraf -rf build dist node_modules"
+    "clean": "rimraf -rf build dist node_modules",
+    "version": "npm run build",
+    "patch": "npm version patch -m 'v%s' && npm run postpublish",
+    "minor": "npm version minor -m 'v%s' && npm run postpublish",
+    "major": "npm version major -m 'v%s' && npm run postpublish",
+    "postpublish": "git push -u && git push --tags"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
