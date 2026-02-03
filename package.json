@@ -1,7 +1,7 @@
 {
   "name": "hero-display",
   "productName": "HERO display",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "App for display on HERO robot",
   "main": "build/electron/main.js",
   "author": {
