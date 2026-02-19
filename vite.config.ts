@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
+import copy from "rollup-plugin-copy";
 
 import { rmSync } from "node:fs";
 import path from "node:path";
@@ -53,13 +54,25 @@ export default defineConfig(({ command, mode }) => {
       emptyOutDir: true,
     },
     plugins: [
+      copy({
+        targets: [
+          {
+            src: "public/icon.png",
+            dest: outDir,
+          },
+        ],
+      }),
       vue({ isProduction: isBuild }),
       vueDevTools({ componentInspector: { vue: 3, launchEditor: "webstorm" }, launchEditor: "webstorm" }),
       electron([
         {
           entry: "electron/main.ts",
-          onstart(options) {
-            process.env.VSCODE_DEBUG ? console.log(/* For `.vscode/.debug.script.mjs` */ "[startup] Electron App") : options.startup(argv);
+          onstart: function (options) {
+            if (process.env.VSCODE_DEBUG) {
+              console.log(/* For `.vscode/.debug.script.mjs` */ "[startup] Electron App");
+            } else {
+              options.startup(argv);
+            }
           },
           vite: {
             build: {
